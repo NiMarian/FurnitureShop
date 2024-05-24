@@ -6,6 +6,7 @@ import CategorieMagazin from './Pages/CategorieMagazin';
 import Produse from './Pages/Produse';
 import Cos from './Pages/Cos';
 import LoginSignup from './Pages/LoginSignup';
+import Footer from './Components/Footer/Footer';
 
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
         <Route path='/cos' element={<Cos/>}/>
         <Route path='/login' element={<LoginSignup/>}/>
       </Routes>
+      <Footer/>
       </BrowserRouter>
     </div>
   );
