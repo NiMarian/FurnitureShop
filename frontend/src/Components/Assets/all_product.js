@@ -31,7 +31,7 @@ let all_product = [
   {
     id: 1,
     name: "Statuie Buddha din lemn",
-    category: "decoratii",
+    category: "decoratiuni",
     image: p1_img,
     new_price: 50.0,
     old_price: 80.5,
@@ -39,7 +39,7 @@ let all_product = [
   {
     id: 2,
     name: "Statuie Dansul doamnei harnice",
-    category: "decoratii",
+    category: "decoratiuni",
     image: p2_img,
     new_price: 85.0,
     old_price: 120.5,
@@ -47,7 +47,7 @@ let all_product = [
   {
     id: 3,
     name: "Statuie Ingeras",
-    category: "decoratii",
+    category: "decoratiuni",
     image: p3_img,
     new_price: 60.0,
     old_price: 100.5,
@@ -55,7 +55,7 @@ let all_product = [
   {
     id: 4,
     name: "Statuie padurar",
-    category: "decoratii",
+    category: "decoratiuni",
     image: p4_img,
     new_price: 100.0,
     old_price: 150.0,
@@ -63,7 +63,7 @@ let all_product = [
   {
     id: 5,
     name: "Vaza din lemn",
-    category: "decoratii",
+    category: "decoratiuni",
     image: p5_img,
     new_price: 85.0,
     old_price: 120.5,
@@ -71,7 +71,7 @@ let all_product = [
   {
     id: 6,
     name: "Set vaze din lemn",
-    category: "decoratii",
+    category: "decoratiuni",
     image: p6_img,
     new_price: 85.0,
     old_price: 120.5,
@@ -79,7 +79,7 @@ let all_product = [
   {
     id: 7,
     name: "Etajera din lemn",
-    category: "decoratii",
+    category: "decoratiuni",
     image: p7_img,
     new_price: 85.0,
     old_price: 120.5,
@@ -87,7 +87,7 @@ let all_product = [
   {
     id: 8,
     name: "Panou din lemn",
-    category: "decoratii",
+    category: "decoratiuni",
     image: p8_img,
     new_price: 85.0,
     old_price: 120.5,
@@ -95,7 +95,7 @@ let all_product = [
   {
     id: 9,
     name: "Lustra din lemn",
-    category: "luminare",
+    category: "luminat",
     image: p9_img,
     new_price: 85.0,
     old_price: 120.5,
@@ -103,7 +103,7 @@ let all_product = [
   {
     id: 10,
     name: "Suport lumanare din lemn",
-    category: "luminare",
+    category: "luminat",
     image: p10_img,
     new_price: 85.0,
     old_price: 120.5,
@@ -111,7 +111,7 @@ let all_product = [
   {
     id: 11,
     name: "Lampa din lemn",
-    category: "luminare",
+    category: "luminat",
     image: p11_img,
     new_price: 85.0,
     old_price: 120.5,
@@ -119,7 +119,7 @@ let all_product = [
   {
     id: 12,
     name: "Suport lumanare din lemn2",
-    category: "luminare",
+    category: "luminat",
     image: p12_img,
     new_price: 85.0,
     old_price: 120.5,
@@ -127,7 +127,7 @@ let all_product = [
   {
     id: 13,
     name: "Set lustre din lemn",
-    category: "luminare",
+    category: "luminat",
     image: p13_img,
     new_price: 85.0,
     old_price: 120.5,
@@ -135,7 +135,7 @@ let all_product = [
   {
     id: 14,
     name: "Veioza din lemn",
-    category: "luminare",
+    category: "luminat",
     image: p14_img,
     new_price: 85.0,
     old_price: 120.5,
@@ -143,7 +143,7 @@ let all_product = [
   {
     id: 15,
     name: "Masa din lemn simpla",
-    category: "masa",
+    category: "mobila",
     image: p15_img,
     new_price: 85.0,
     old_price: 120.5,
@@ -151,7 +151,7 @@ let all_product = [
   {
     id: 16,
     name: "Masa din lemn rotunda",
-    category: "masa",
+    category: "mobila",
     image: p16_img,
     new_price: 85.0,
     old_price: 120.5,
@@ -159,7 +159,7 @@ let all_product = [
   {
     id: 17,
     name: "Masa din lemn cu compartiment",
-    category: "masa",
+    category: "mobila",
     image: p17_img,
     new_price: 85.0,
     old_price: 120.5,
@@ -167,7 +167,7 @@ let all_product = [
   {
     id: 18,
     name: "Masa din lemn dining",
-    category: "masa",
+    category: "mobila",
     image: p18_img,
     new_price: 85.0,
     old_price: 120.5,
@@ -175,7 +175,7 @@ let all_product = [
   {
     id: 19,
     name: "Masa din lemn patrata",
-    category: "masa",
+    category: "mobila",
     image: p19_img,
     new_price: 85.0,
     old_price: 120.5,
@@ -183,7 +183,7 @@ let all_product = [
   {
     id: 20,
     name: "Masa din lemn joasa",
-    category: "masa",
+    category: "mobila",
     image: p20_img,
     new_price: 85.0,
     old_price: 120.5,
@@ -191,7 +191,7 @@ let all_product = [
   {
     id: 21,
     name: "Masa din lemn cu compartiment deschis",
-    category: "masa",
+    category: "mobila",
     image: p21_img,
     new_price: 85.0,
     old_price: 120.5,
@@ -199,7 +199,7 @@ let all_product = [
   {
     id: 22,
     name: "Scaun simplu",
-    category: "scaun",
+    category: "mobila",
     image: p22_img,
     new_price: 85.0,
     old_price: 120.5,
@@ -207,7 +207,7 @@ let all_product = [
   {
     id: 23,
     name: "Scaun finisat manual",
-    category: "scaun",
+    category: "mobila",
     image: p23_img,
     new_price: 85.0,
     old_price: 120.5,
@@ -215,7 +215,7 @@ let all_product = [
   {
     id: 24,
     name: "Scaun din lemn ",
-    category: "scaun",
+    category: "mobila",
     image: p24_img,
     new_price: 85.0,
     old_price: 120.5,
@@ -223,7 +223,7 @@ let all_product = [
   {
     id: 25,
     name: "Scaun medieval",
-    category: "scaun",
+    category: "mobila",
     image: p25_img,
     new_price: 85.0,
     old_price: 120.5,
@@ -231,7 +231,7 @@ let all_product = [
   {
     id: 26,
     name: "Scaun medieval2",
-    category: "scaun",
+    category: "mobila",
     image: p26_img,
     new_price: 85.0,
     old_price: 120.5,
@@ -239,7 +239,7 @@ let all_product = [
   {
     id: 27,
     name: "Scaun simplu2",
-    category: "scaun",
+    category: "mobila",
     image: p27_img,
     new_price: 85.0,
     old_price: 120.5,

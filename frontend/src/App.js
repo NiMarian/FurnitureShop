@@ -7,6 +7,10 @@ import Produse from './Pages/Produse';
 import Cos from './Pages/Cos';
 import LoginSignup from './Pages/LoginSignup';
 import Footer from './Components/Footer/Footer';
+import banner_decoratii from './Components/Assets/banner_decoratii.png'
+import banner_lumina from './Components/Assets/banner_lumina.png'
+import banner_mobila from './Components/Assets/banner_mobila.png'
+import ShopContextProvider from './Context/ShopContext';
 
 
 function App() {
@@ -16,13 +20,10 @@ function App() {
       <Navbar/>
       <Routes>
         <Route path='/' element={<Magazin/>}/>
-        <Route path='/decoratiuni' element={<CategorieMagazin category ="decoratiuni"/>}/>
-        <Route path='/luminat' element={<CategorieMagazin category ="luminat" />}/>
-        <Route path='/mese' element={<CategorieMagazin category ="mese" />}/>
-        <Route path='/scaune' element={<CategorieMagazin category ="scaune"/>}/>
-        <Route path="/produse" element={<Produse/>}>
-          <Route path=':productId' element= {<Produse/>}/>
-        </Route>
+        <Route path='/decoratiuni' element={<CategorieMagazin banner = {banner_decoratii} category ="decoratiuni"/>}/>
+        <Route path='/luminat' element={<CategorieMagazin banner = {banner_lumina} category ="luminat" />}/>
+        <Route path='/mobila' element={<CategorieMagazin banner = {banner_mobila} category ="mobila" />}/>
+        <Route path='/produse/:productId' element={<Produse />} />
         <Route path='/cos' element={<Cos/>}/>
         <Route path='/login' element={<LoginSignup/>}/>
       </Routes>

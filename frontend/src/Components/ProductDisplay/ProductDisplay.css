@@ -1,0 +1,123 @@
+@media (max-width: 768px) {
+    .productdisplay {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .productdisplay-left, .productdisplay-right {
+        width: 100%;
+        max-width: none;
+    }
+
+    .productdisplay-img-list {
+        flex-direction: row;
+        overflow-x: auto;
+    }
+
+    .productdisplay-main-img {
+        width: 100%;
+        height: auto;
+    }
+}
+
+
+.productdisplay {
+    display: flex;
+    justify-content: center;
+    margin: 40px auto;
+    max-width: 1200px;
+    padding: 0 20px;
+    gap: 40px; /* Adaugă un gap între secțiuni pentru a asigura spațierea corectă */
+}
+
+.productdisplay-left {
+    display: flex;
+    gap: 17px;
+}
+
+.productdisplay-img-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.productdisplay-img-list img {
+    height: 163px;
+}
+
+.productdisplay-main-img {
+    width: 586px;
+    height: 700px;
+}
+
+.productdisplay-right {
+    display: flex;
+    flex-direction: column;
+    max-width: 600px; /* Limitează lățimea secțiunii de detalii pentru lizibilitate */
+}
+
+.productdisplay-right h1 {
+    color: #3d3d3d;
+    font-size: 32px;
+    font-weight: 700;
+}
+
+.productdisplay-right-star {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+    gap: 5px;
+    color: #1c1c1c;
+    font-size: 16px;
+}
+
+.productdisplay-right-prices {
+    display: flex;
+    flex-direction: column; /* Asigură-te că prețurile și descrierea sunt afișate unul sub altul */
+    align-items: flex-start; /* Aliniază la început pentru a evita extinderea peste ecran */
+    margin: 20px 0;
+    gap: 10px;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.product-right-price-old {
+    color: #818181;
+    text-decoration: line-through;
+}
+
+.product-right-price-new {
+    color: #ff4141;
+}
+
+.productdisplay-right-description {
+    margin: 20px 0; /* Adaugă spațiere sus și jos pentru lizibilitate */
+    font-size: 16px;
+    color: #555;
+    line-height: 1.6;
+    max-width: 100%; /* Asigură-te că descrierea nu depășește lățimea secțiunii */
+    word-wrap: break-word; /* Forțează textul să se încadreze în spațiul disponibil */
+}
+
+.productdisplay-right button {
+    padding: 15px 30px;
+    width: auto;
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
+    background-color: #ff4141;
+    margin-bottom: 20px;
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
+
+.productdisplay-right-category {
+    margin-top: 10px;
+}
+
+.productdisplay-right-category span {
+    font-weight: 600;
+}
+
+
