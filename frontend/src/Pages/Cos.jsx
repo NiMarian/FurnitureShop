@@ -1,8 +1,11 @@
 import React from 'react'
+import CartItems from '../Components/CartItems/CartItems';
 
 const Cos = () => {
   return (
-    <div>Cos</div>
+    <div>
+      <CartItems/>
+    </div>
   )
 }
 
