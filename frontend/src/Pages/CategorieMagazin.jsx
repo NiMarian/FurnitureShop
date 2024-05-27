@@ -29,7 +29,7 @@ const CategorieMagazin = (props) => {
         })}
       </div>
       <div className="shopcategory-loadmore">
-        Descopera mai multe
+        Descoperă mai multe
       </div>
     </div>
   )

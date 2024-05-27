@@ -43,8 +43,8 @@ const ProductDisplay = (props) => {
                     Produs fsdfjsdfkgleytsbguyrsbdfslbjhgblfdsagbhjdsfhbjghbjsdkfgkhbjdfskhjbgkhbjdfshgjbdsfhjbghjbdfhbjgsdh
                 </div>
                 <button onClick={() => { addToCart(product.id) }}>Adauga in cos</button>
-                <p className='productdisplay-right-category'><span>Categorie :</span>Decoratiuni , Statui, Vaze , Etajera </p>
-                <p className='productdisplay-right-category'><span>Tags :</span>Moderna, Lemn</p>
+                <p className='productdisplay-right-category'><span>Categorie :</span>Decorațiuni, Statui, Vaze, Etajeră </p>
+                <p className='productdisplay-right-category'><span>Tags :</span>Modern, Lemn</p>
             </div>
         </div>
     );

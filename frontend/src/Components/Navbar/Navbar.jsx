@@ -28,9 +28,9 @@ const dropdown_toggle = (e) =>{
         <img className='nav-dropdown' onClick= {dropdown_toggle} src={nav_dropdown} alt="" />
         <ul ref={menuRef} className="nav-menu">
         <li onClick={()=>{setMenu("magazin")}}><Link style={{textDecoration: "none"}} to='/'>Magazin</Link>{menu==="magazin"?<hr/>:<></>}</li>
-          <li onClick={()=>{setMenu("decoratiuni")}}><Link style={{textDecoration: "none"}} to='decoratiuni'>Decoratiuni</Link>{menu==="decoratiuni"?<hr/>:<></>}</li>
+          <li onClick={()=>{setMenu("decoratiuni")}}><Link style={{textDecoration: "none"}} to='decoratiuni'>Decorațiuni</Link>{menu==="decoratiuni"?<hr/>:<></>}</li>
           <li onClick={()=>{setMenu("luminat")}}><Link style={{textDecoration: "none"}} to='luminat'>Luminat</Link>{menu==="luminat"?<hr/>:<></>}</li>
-          <li onClick={()=>{setMenu("mobila")}}><Link style={{textDecoration: "none"}} to='mobila'>Mobila</Link>{menu==="mobila"?<hr/>:<></>}</li>
+          <li onClick={()=>{setMenu("mobila")}}><Link style={{textDecoration: "none"}} to='mobila'>Mobilă</Link>{menu==="mobila"?<hr/>:<></>}</li>
         </ul>
         <div className="nav-login-cart">
           <Link to='login'><button>Login</button></Link>

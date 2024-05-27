@@ -9,17 +9,17 @@ const Hero = () => {
   return (
     <div className='hero'>
         <div className="hero-left">
-            <h2>New Arrivals Only</h2>
+            <h2>Doar Produse Noi</h2>
             <div>
                 <div className="hero-hand-icon">
                     <p>Noi</p>
                     <img src={hand_icon} alt= ""/>
                 </div>
-                <p>Colectii</p>
+                <p>Colecții</p>
                 <p>pentru oricine</p>
             </div>
             <div className="hero-latest-btn">
-                <div>Colectie noua</div>
+                <div>Colecție nouă</div>
                 <img src={arrow_icon} alt=""/>
             </div>
         </div>
