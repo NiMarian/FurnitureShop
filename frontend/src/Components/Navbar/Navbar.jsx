@@ -33,7 +33,8 @@ const dropdown_toggle = (e) =>{
           <li onClick={()=>{setMenu("mobila")}}><Link style={{textDecoration: "none"}} to='mobila'>Mobilă</Link>{menu==="mobila"?<hr/>:<></>}</li>
         </ul>
         <div className="nav-login-cart">
-          <Link to='login'><button>Login</button></Link>
+          {localStorage.getItem('auth-token')
+          ?<button onClick={()=>{localStorage.removeItem('auth-token');window.location.replace('/')}}>Logout</button>:<Link to='login'><button>Login</button></Link>}
           <Link to ='cos'><img src={cart_icon} alt="" /></Link>
           <div className="nav-cart-count">{getTotalCartItems()}</div>
         </div>

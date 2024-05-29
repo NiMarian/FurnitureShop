@@ -8,7 +8,8 @@ const path = require("path");
 const cors = require("cors");
 const e = require("express");
 const { type } = require("os");
-const { log } = require("console");
+const { log, error } = require("console");
+const fs = require("fs");
 
 app.use(express.json());
 app.use(cors());
@@ -20,10 +21,7 @@ if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-mongoose.connect(process.env.MONGO_URI || "mongodb+srv://nicutamarian:7SdQPYGTpRgq55Mz@cluster0.50bjgvw.mongodb.net/licenta", {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-});
+mongoose.connect("mongodb+srv://nicutamarian:7SdQPYGTpRgq55Mz@cluster0.50bjgvw.mongodb.net/licenta");
 
 // Creare API
 
@@ -97,7 +95,7 @@ const productSchema = new mongoose.Schema({
 
 const Product = mongoose.model("Product", productSchema);
 
-// Add product endpoint
+// Adaugare produs endpoint
 app.post('/addproduct', async (req, res) => {
     try {
         let products = await Product.find({});
@@ -109,7 +107,7 @@ app.post('/addproduct', async (req, res) => {
             image: req.body.image,
             category: req.body.category,
             new_price: req.body.new_price,
-            old_price: req.body.old_price, // corrected old_price mapping
+            old_price: req.body.old_price,
         });
 
         await product.save();
@@ -127,7 +125,7 @@ app.post('/addproduct', async (req, res) => {
     }
 });
 
-// Remove product endpoint
+// Stergere produs endpoint
 app.post('/removeproduct', async (req, res) => {
     try {
         await Product.findOneAndDelete({ id: req.body.id });
@@ -159,6 +157,143 @@ app.get('/allproducts', async (req, res) => {
         });
     }
 });
+
+//Schema pentru crearea modelului User
+
+const Users = mongoose.model('Users',{
+    name:{
+        type:String,
+    },
+    email:{
+        type:String,
+        unique:true,
+    },
+    password:{
+        type:String,
+    },
+    cartData:{
+        type:Object,
+    },
+    date:{
+        type:Date,
+        default:Date.now,
+    }
+})
+
+// Registrare user endpoint
+
+app.post('/signup',async(req,res)=>{
+
+    let check = await Users.findOne({email:req.body.email});
+    if(check){
+        return res.status(400).json({success:false,errors:"Deja exista acest email."})
+    }
+    let cart = {};
+    for (let i = 0; i < 300; i++) {
+        cart[i]=0;
+    }
+    const user = new Users({
+        name:req.body.username,
+        email:req.body.email,
+        password:req.body.password,
+        cartData:cart,
+    })
+
+    await user.save();
+
+    const data = {
+        user:{
+            id:user.id
+        }
+    }
+
+    const token = jwt.sign(data,'secret_ecom');
+    res.json({success:true,token})
+})
+
+
+//Creare endpoint pentru logare
+app.post('/login',async (req,res)=>{
+    let user = await Users.findOne({email:req.body.email});
+    if(user){
+        const passCompare = req.body.password === user.password;
+        if(passCompare){
+            const data = {
+                user:{
+                    id:user.id
+                }
+            }
+            const token = jwt.sign(data,'secret_ecom');
+            res.json({success:true,token});
+        }
+        else{
+            res.json({success:false,errors:"Parola gresita"});
+        }
+    }
+    else{
+        res.json({succes:false,errors:"Email gresit"});
+    }
+})
+
+//Creare endpoint pentru colectii noi 
+app.get('/newcollections', async(req,res)=>{
+    let products = await Product.find({});
+    let newcollection = products.slice(1).slice(-8);
+    console.log("Colectie noua luata");
+    res.send(newcollection);
+})
+
+//Creare endpoint pentru popular
+
+app.get('/popularindecoratiuni',async (req,res)=>{
+    let products = await Product.find({category:"decoratiuni"});
+    let popular_in_decoratiuni = products.slice(0,4);
+    console.log("Popular in decoratiuni luat");
+    res.send(popular_in_decoratiuni);
+})
+
+//Creare middleware pentru a lua user
+const fetchUser = async(req,res,next)=>{
+    const token = req.header('auth-token');
+    if(!token) {
+        res.status(401).send({errors:"Autentifica-te cu un token valid"})
+    }
+    else{
+        try {
+            const data = jwt.verify(token,'secret_ecom');
+            req.user = data.user;
+            next();
+        } catch (error) {
+            res.status(401).send({errors:"Autentifica-te cu un token valid"})
+            
+        }
+    }
+}
+
+//Creare endpoint pentru cartdata
+app.post('/addtocart',fetchUser, async(req,res)=>{
+    console.log("Adaugat",req.body.itemId);
+    let userData = await Users.findOne({_id:req.user.id});
+    userData.cartData[req.body.itemId] += 1;
+    await Users.findOneAndUpdate({_id:req.user.id},{cartData:userData.cartData});
+    res.send("Adaugat")
+})
+
+//Creare endpoint sa stearga un produs din cartdata
+app.post('/removefromcart',fetchUser,async(req,res)=>{
+    console.log("Sters",req.body.itemId);
+    let userData = await Users.findOne({_id:req.user.id});
+    if(userData.cartData[req.body.itemId]>0)
+    userData.cartData[req.body.itemId] -= 1;
+    await Users.findOneAndUpdate({_id:req.user.id},{cartData:userData.cartData});
+    res.send("Sters")
+})
+
+//Creare endpoint sa ia datele din cartdata
+app.post('/getcart', fetchUser,async(req,res)=>{
+    let userData = await Users.findOne({_id:req.user.id});
+    res.json(userData.cartData);
+})
 
 app.listen(port, (error) => {
     if (!error) {
