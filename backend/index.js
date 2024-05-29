@@ -10,6 +10,7 @@ const e = require("express");
 const { type } = require("os");
 const { log, error } = require("console");
 const fs = require("fs");
+const nodemailer = require('nodemailer');
 
 app.use(express.json());
 app.use(cors());
@@ -294,6 +295,127 @@ app.post('/getcart', fetchUser,async(req,res)=>{
     let userData = await Users.findOne({_id:req.user.id});
     res.json(userData.cartData);
 })
+
+//Schema abonare
+const subscriptionSchema = new mongoose.Schema({
+    email: {
+        type: String,
+        unique: true,
+        required: true,
+    },
+    date: {
+        type: Date,
+        default: Date.now,
+    },
+});
+
+const Subscription = mongoose.model('Subscription', subscriptionSchema);
+
+//Creare de transporter pentru a trimite emailuri
+const transporter = nodemailer.createTransport({
+    service: "Gmail",
+    auth: {
+        user: 'contactexotique2@gmail.com',
+        pass: 'trjf oysr kftu ivoc'
+    }
+});
+
+//Creare endpoint pentru gestionarea abonarii
+app.post('/subscribe', async (req, res) => {
+    const { email } = req.body;
+
+    try {
+        let existingSubscription = await Subscription.findOne({ email });
+        if (existingSubscription) {
+            return res.status(400).json({ success: false, message: 'Email-ul este deja abonat.' });
+        }
+
+        const newSubscription = new Subscription({ email });
+        await newSubscription.save();
+
+        const unsubscribeLink = `http://localhost:${port}/unsubscribe/${email}`;
+
+        const mailOptions = {
+            from: 'contactexotique2@gmail.com',
+            to: email,
+            subject: 'Abonare confirmata',
+            text: `Mulțumim pentru abonarea la Exotique! Acum veți primi oferte și actualizări exclusive. Click pe linkul următor pentru a confirma anularea abonamentului: ${unsubscribeLink}`,
+            html: `<p>Mulțumim pentru abonarea la Exotique! Acum veți primi oferte și actualizări exclusive.</p>
+                   <p>Click pe <a href="${unsubscribeLink}">acest link</a> pentru a confirma anularea abonamentului.</p>`
+        };
+
+        await transporter.sendMail(mailOptions);
+        return res.json({ success: true });
+    } catch (error) {
+        console.error('Eroare la trimiterea emailului de abonare:', error);
+        return res.status(500).json({ success: false, message: 'Eroare la trimiterea emailului de abonare' });
+    }
+});
+
+
+// Endpoint pentru anularea abonarii
+// Endpoint pentru anularea abonarii
+app.post('/unsubscribe', async (req, res) => {
+    const { email } = req.body;
+
+    try {
+        const subscription = await Subscription.findOne({ email });
+        if (!subscription) {
+            return res.status(400).json({ success: false, message: 'Email-ul nu este abonat.' });
+        }
+
+        const unsubscribeLink = `http://localhost:${port}/unsubscribe/${email}`;
+
+        const mailOptions = {
+            from: 'contactexotique2@gmail.com',
+            to: email,
+            subject: 'Anulare abonament',
+            text: `Click pe linkul următor pentru a confirma anularea abonamentului: ${unsubscribeLink}`,
+            html: `<p>Click pe <a href="${unsubscribeLink}">acest link</a> pentru a confirma anularea abonamentului.</p>`
+        };
+
+        await transporter.sendMail(mailOptions);
+        return res.json({ success: true, message: 'Cererea de anulare a fost trimisă. Verificați email-ul pentru confirmare.' });
+    } catch (error) {
+        console.error('Eroare la trimiterea emailului de anulare a abonării:', error);
+        return res.status(500).json({ success: false, message: 'Eroare la trimiterea emailului de anulare a abonării' });
+    }
+});
+
+// Endpoint pentru confirmarea anularii abonarii
+app.get('/unsubscribe/:email', async (req, res) => {
+    const { email } = req.params;
+
+    try {
+        const subscription = await Subscription.findOneAndDelete({ email });
+        if (!subscription) {
+            return res.status(400).json({ success: false, message: 'Email-ul nu este abonat.' });
+        }
+
+        return res.json({ success: true, message: 'Abonarea a fost anulată cu succes.' });
+    } catch (error) {
+        console.error('Eroare la anularea abonării:', error);
+        return res.status(500).json({ success: false, message: 'Eroare la anularea abonării' });
+    }
+});
+
+
+// Endpoint pentru confirmarea anularii abonarii
+app.get('/unsubscribe/:email', async (req, res) => {
+    const { email } = req.params;
+
+    try {
+        const subscription = await Subscription.findOneAndDelete({ email });
+        if (!subscription) {
+            return res.status(400).json({ success: false, message: 'Email-ul nu este abonat.' });
+        }
+
+        return res.json({ success: true, message: 'Abonarea a fost anulată cu succes.' });
+    } catch (error) {
+        console.error('Eroare la anularea abonării:', error);
+        return res.status(500).json({ success: false, message: 'Eroare la anularea abonării' });
+    }
+});
 
 app.listen(port, (error) => {
     if (!error) {
