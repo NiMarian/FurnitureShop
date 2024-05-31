@@ -417,6 +417,58 @@ app.get('/unsubscribe/:email', async (req, res) => {
     }
 });
 
+//Creare Schema pentru promocode
+const promoCodeSchema = new mongoose.Schema({
+    code: {
+        type: String,
+        unique: true,
+        required: true,
+    },
+    discount: {
+        type: Number,
+        required: true,
+    },
+    date: {
+        type: Date,
+        default: Date.now,
+    },
+});
+
+// Endpoint pentru adăugarea unui promo code
+app.post('/addpromocode', async (req, res) => {
+    try {
+        const promoCode = new PromoCode({
+            code: req.body.code,
+            discount: req.body.discount,
+        });
+        await promoCode.save();
+        res.json({ success: true });
+    } catch (error) {
+        console.error("Error adding promo code:", error);
+        res.status(500).json({ success: false, message: 'Error adding promo code' });
+    }
+});
+
+
+const PromoCode = mongoose.model('PromoCode', promoCodeSchema);
+
+// Endpoint pentru verificarea unui promo code
+app.post('/checkpromocode', async (req, res) => {
+    try {
+        let promoCode = await PromoCode.findOne({ code: req.body.code });
+        if (promoCode) {
+            res.json({ success: true, discount: promoCode.discount });
+        } else {
+            res.json({ success: false });
+        }
+    } catch (error) {
+        console.error("Error checking promo code:", error);
+        res.status(500).json({ success: false, message: 'Error checking promo code' });
+    }
+});
+
+
+
 app.listen(port, (error) => {
     if (!error) {
         console.log("Server Running on Port " + port);

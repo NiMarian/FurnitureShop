@@ -27,6 +27,14 @@
     grid-template-columns: 1fr 1fr 1fr 1fr;
     row-gap: 80px;
 }
+.shopcategory-sort select{
+    border-color: transparent transparent #fff transparent;
+    font-size: 14px;
+    font-family: "poppins";
+    font-weight: 600;
+}
+
+
 
 .shopcategory-loadmore{
     display: flex;

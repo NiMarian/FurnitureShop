@@ -1,14 +1,33 @@
-import React from 'react'
-import './Breadcrumb.css'
-import arrow_icon from '../Assets/breadcrumb_arrow.png'
+import React from 'react';
+import './Breadcrumb.css';
+import { useNavigate } from 'react-router-dom';
+import arrow_icon from '../Assets/breadcrumb_arrow.png';
 
 const Breadcrumb = (props) => {
-    const {product} = props;
-  return (
-    <div className='breadcrumb'>
-        HOME <img src={arrow_icon} alt="" /> SHOP <img src={arrow_icon} alt="" /> {product.category} <img src={arrow_icon} alt="" /> {product.name}
-    </div>
-  )
-}
+    const { product } = props;
+    const navigate = useNavigate();
 
-export default Breadcrumb
+    const navigateToHome = () => {
+        navigate('/');
+    };
+
+    const navigateToCategory = () => {
+        navigate(`/${product.category}`);
+    };
+
+    const navigateToProduct = () => {
+        navigate(`/produse/${product.id}`);
+    };
+
+    return (
+        <div className='breadcrumb'>
+            <span onClick={navigateToHome}>HOME</span> 
+            <img src={arrow_icon} alt="" /> 
+            <span onClick={navigateToCategory}>{product.category}</span> 
+            <img src={arrow_icon} alt="" /> 
+            <span onClick={navigateToProduct}>{product.name}</span>
+        </div>
+    );
+};
+
+export default Breadcrumb;
