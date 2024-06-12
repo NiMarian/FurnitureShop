@@ -1,39 +1,20 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import './CartItems.css';
 import { ShopContext } from '../../Context/ShopContext';
 import remove_icon from '../Assets/cart_cross_icon.png';
+import { useNavigate } from 'react-router-dom';
 
 const CartItems = () => {
     const { getTotalCartAmount, all_product, cartItems, removeFromCart } = useContext(ShopContext);
-    const [promoCode, setPromoCode] = useState("");
-    const [discount, setDiscount] = useState(0);
     const [total, setTotal] = useState(getTotalCartAmount());
+    const navigate = useNavigate();
 
-    const handlePromoCodeChange = (e) => {
-        setPromoCode(e.target.value);
-    };
+    useEffect(() => {
+        setTotal(getTotalCartAmount());
+    }, [cartItems, getTotalCartAmount]);
 
-    const applyPromoCode = async () => {
-        try {
-            let response = await fetch('http://localhost:4000/checkpromocode', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ code: promoCode }),
-            });
-            let data = await response.json();
-            if (data.success) {
-                setDiscount(data.discount);
-                setTotal(getTotalCartAmount() * (1 - data.discount / 100));
-                alert("Promo code aplicat");
-            } else {
-                alert("Promo code invalid");
-            }
-        } catch (error) {
-            console.error("Error:", error);
-            alert("Eroare la aplicarea promo code-ului");
-        }
+    const handleNextStep = () => {
+        navigate('/checkout');
     };
 
     return (
@@ -47,22 +28,26 @@ const CartItems = () => {
                 <p>Șterge</p>
             </div>
             <hr />
-            {all_product.map((e) => {
+            {all_product && all_product.length > 0 ? all_product.map((e) => {
                 if (cartItems[e.id] > 0) {
-                    return <div key={e.id}>
-                        <div className="cartitems-format cartitems-format-main">
-                            <img src={e.image} alt="" className='carticon-product-icon' />
-                            <p>{e.name}</p>
-                            <p>{e.new_price} RON</p>
-                            <button className='cartitems-quantity'>{cartItems[e.id]}</button>
-                            <p>{e.new_price * cartItems[e.id]} RON</p>
-                            <img className='cartitems-remove-icon' src={remove_icon} onClick={() => { removeFromCart(e.id) }} alt="" />
+                    const price = e.new_price ? e.new_price : 0;
+                    return (
+                        <div key={e.id}>
+                            <div className="cartitems-format cartitems-format-main">
+                                <img src={e.image} alt="" className='carticon-product-icon' />
+                                <p>{e.name}</p>
+                                <p>{price} RON</p>
+                                <button className='cartitems-quantity'>{cartItems[e.id]}</button>
+                                <p>{price * cartItems[e.id]} RON</p>
+                                <img className='cartitems-remove-icon' src={remove_icon} onClick={() => { removeFromCart(e.id) }} alt="" />
+                            </div>
+                            <hr />
                         </div>
-                        <hr />
-                    </div>
+                    );
                 }
                 return null;
-            })}
+            }) : <p>Nu există produse în coș.</p>}
+
             <div className="cartitems-down">
                 <div className="cartitems-total">
                     <h1>Total Cos</h1>
@@ -74,26 +59,23 @@ const CartItems = () => {
                         <hr />
                         <div className="cartitems-total-item">
                             <p>Cost de livrare</p>
-                            <p>Gratuit</p>
+                            <p>Vezi in pasul următor</p>
                         </div>
                         <hr />
-                        <div className="caritems-total-item">
+                        
+                        <div className="cartitems-total-item">
                             <h3>Total</h3>
                             <h3>{total} RON</h3>
                         </div>
                     </div>
-                    <button>Pasul Urmator</button>
+                    <button onClick={handleNextStep}>Pasul Următor</button>
                 </div>
                 <div className="cartitems-promocode">
-                    <p>Daca ai un promo code, introdu-l aici</p>
-                    <div className="cartitems-promobox">
-                        <input type="text" value={promoCode} onChange={handlePromoCodeChange} placeholder='promo code' />
-                        <button onClick={applyPromoCode}>Verifica</button>
-                    </div>
+                    <p>Daca ai un cod promoțional, introdu-l in pasul următor</p>
                 </div>
             </div>
         </div>
-    )
+    );
 }
 
 export default CartItems;

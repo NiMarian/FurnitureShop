@@ -9,11 +9,10 @@ const Hero = () => {
   return (
     <div className='hero'>
         <div className="hero-left">
-            <h2>Doar Produse Noi</h2>
+            <h2>Doar produse noi, intrâ acum</h2>
             <div>
-                <div className="hero-hand-icon">
+                <div>
                     <p>Noi</p>
-                    <img src={hand_icon} alt= ""/>
                 </div>
                 <p>Colecții</p>
                 <p>pentru oricine</p>

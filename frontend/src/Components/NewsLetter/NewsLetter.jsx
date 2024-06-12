@@ -37,10 +37,10 @@ const NewsLetter = () => {
         <div>
             <input
              type="email"
-             placeholder='Your Email'
+             placeholder='Introdu Email'
              value={email}
              onChange={(e) => setEmail(e.target.value)} />
-            <button onClick={handleSubscribe}>Subscribe</button>
+            <button onClick={handleSubscribe}>Abonează-te</button>
         </div>
     </div>
   )

@@ -1,0 +1,248 @@
+/* CSS pentru Checkout */
+.checkout {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  flex-wrap: wrap;
+}
+
+.checkout-left,
+.checkout-right {
+  flex: 1;
+  margin: 10px;
+  min-width: 300px;
+}
+
+.checkout-left h2,
+.checkout-left h3,
+.checkout-right h2,
+.checkout-right h3 {
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.checkout-left form {
+  display: flex;
+  flex-direction: column;
+}
+
+.checkout-left input[type="text"],
+.checkout-left input[type="email"] {
+  margin-bottom: 15px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.checkout-name,
+.checkout-adresa {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.checkout-name input[type="text"],
+.checkout-adresa input[type="text"] {
+  flex: 1;
+  margin-right: 10px;
+}
+
+.checkout-name input[type="text"]:last-child,
+.checkout-adresa input[type="text"]:last-child {
+  margin-right: 0;
+}
+
+.checkout-left label {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.checkout-left input[type="radio"] {
+  margin-right: 10px;
+}
+
+.checkout-right {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.checkout-right h3 {
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.checkout-products {
+  margin-bottom: 20px;
+}
+
+.checkout-product {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.checkout-product img {
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
+}
+
+.checkout-product-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.checkout-product-details p {
+  margin: 0;
+}
+
+.checkout-summary {
+  border-top: 1px solid #ccc;
+  padding-top: 10px;
+}
+
+.checkout-summary-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.checkout-summary-item h3 {
+  margin: 0;
+}
+
+.checkout-promobox {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+.checkout-promobox input[type="text"] {
+  flex: 1;
+  margin-right: 5px; /* Adjusted margin to bring input and button closer */
+}
+
+.checkout-promobox button {
+  flex-shrink: 0; /* Ensures the button doesn't shrink */
+  margin: 0;
+  padding: 10px 20px;
+  background-color: #d67034; /* New color */
+  border: none;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.checkout-plasare button {
+  width: auto;
+  margin: 0 auto;
+  height: 40px;
+  background: #eaeaea;
+  border: none;
+  color: #c78e39;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button[type="submit"],
+.checkout-promobox button {
+  padding: 10px 20px;
+  background-color: #d67034; /* New color */
+  border: none;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button[type="submit"]:hover,
+.checkout-promobox button:hover,
+.checkout-plasare button:hover {
+  background-color: #b85c28; /* Darker shade of the new color */
+}
+
+input[type="text"],
+input[type="email"],
+input[type="radio"] {
+  
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="radio"]:focus {
+  outline: none;
+  border-color: #d67034; /* Border color to match the button */
+}
+
+.quantity-controls button{
+  padding: 2.5px 5px;
+  background-color: #d67034;
+  border: none;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+
+}
+
+@media (max-width: 768px) {
+  .checkout {
+    flex-direction: column;
+    padding: 10px;
+  }
+
+  .checkout-left,
+  .checkout-right {
+    margin: 0;
+  }
+
+  .checkout-left input[type="text"],
+  .checkout-left input[type="email"],
+  .checkout-left input[type="radio"],
+  .checkout-promobox input,
+  .checkout-promobox button,
+  .checkout-plasare button {
+    
+    margin-bottom: 10px;
+  }
+
+  .checkout-name input[type="text"],
+  .checkout-adresa input[type="text"] {
+    width: calc(50% - 5px);
+    margin-right: 10px;
+    margin-bottom: 10px;
+  }
+
+  .checkout-name input[type="text"]:last-child,
+  .checkout-adresa input[type="text"]:last-child {
+    margin-right: 0;
+  }
+
+  .checkout-promobox {
+    display: flex;
+    width: 100%;
+  }
+
+  .checkout-promobox input {
+    flex: 1;
+    margin-right: 10px;
+  }
+
+  .checkout-promobox button {
+    width: 40%;
+  }
+
+  .checkout-plasare button {
+    width: 100%;
+    margin-top: 10px;
+  }
+}

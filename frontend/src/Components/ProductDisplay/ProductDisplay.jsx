@@ -40,8 +40,20 @@ const ProductDisplay = (props) => {
                     </div>
                 </div>
                 <div className="productdisplay-right-description">
-                    Produs fsdfjsdfkgleytsbguyrsbdfslbjhgblfdsagbhjdsfhbjghbjsdkfgkhbjdfskhjbgkhbjdfshgjbdsfhjbghjbdfhbjgsdh
+                    <h3>Produse din Lemn</h3>
+                    <p>
+                        Produsele din lemn aduc o notă naturală și rustică în orice spațiu, fiind apreciate pentru durabilitatea și estetica lor unică. Aceste produse sunt adesea realizate manual, evidențiind măiestria meșteșugarilor și frumusețea fibrei lemnoase naturale.
+                    </p>
+                    <h3>Decorațiuni</h3>
+                    <p>
+                        Decorațiunile sunt elementele care transformă o casă într-un cămin, adăugând personalitate și stil fiecărei încăperi, fiecare aducând o textură și un caracter distinct.
+                    </p>
+                    <h3>Iluminat</h3>
+                    <p>
+                        Corpurile de iluminat sunt esențiale nu doar pentru funcționalitatea lor, ci și pentru ambianța pe care o creează.
+                    </p>
                 </div>
+
                 <button onClick={() => { addToCart(product.id) }}>Adauga in cos</button>
                 <p className='productdisplay-right-category'><span>Categorie :</span>Decorațiuni, Statui, Vaze, Etajeră </p>
                 <p className='productdisplay-right-category'><span>Tags :</span>Modern, Lemn</p>

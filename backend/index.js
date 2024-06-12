@@ -59,6 +59,7 @@ app.post("/upload", upload.single('product'), (req, res) => {
     }
 });
 
+//Schema pentru produse
 const productSchema = new mongoose.Schema({
     id: {
         type: Number,
@@ -83,6 +84,11 @@ const productSchema = new mongoose.Schema({
     old_price: {
         type: Number,
         required: true,
+    },
+    stock: {
+        type: Number,
+        required: true,
+        default: 0,
     },
     date: {
         type: Date,
@@ -182,7 +188,6 @@ const Users = mongoose.model('Users',{
 })
 
 // Registrare user endpoint
-
 app.post('/signup',async(req,res)=>{
 
     let check = await Users.findOne({email:req.body.email});
@@ -338,11 +343,25 @@ app.post('/subscribe', async (req, res) => {
         const mailOptions = {
             from: 'contactexotique2@gmail.com',
             to: email,
-            subject: 'Abonare confirmata',
+            subject: 'Abonare confirmată',
             text: `Mulțumim pentru abonarea la Exotique! Acum veți primi oferte și actualizări exclusive. Click pe linkul următor pentru a confirma anularea abonamentului: ${unsubscribeLink}`,
-            html: `<p>Mulțumim pentru abonarea la Exotique! Acum veți primi oferte și actualizări exclusive.</p>
-                   <p>Click pe <a href="${unsubscribeLink}">acest link</a> pentru a confirma anularea abonamentului.</p>`
-        };
+            html: `
+              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">
+                <h2 style="color: #333;">Mulțumim pentru abonarea la Exotique!</h2>
+                <p style="font-size: 16px; color: #555;">
+                  Acum veți primi oferte și actualizări exclusive.
+                </p>
+                <p style="font-size: 16px; color: #555;">
+                  Vă așteptăm!
+                </p>
+                <hr style="border: 0; border-top: 1px solid #ddd;">
+                <p style="font-size: 12px; color: #999;">
+                  Exotique, București, România<br>
+                  Dacă nu v-ați abonat la acest newsletter, Click pe <a href="${unsubscribeLink}" style="color: #1a73e8;">acest link</a> pentru a confirma anularea abonamentului..
+                </p>
+              </div>
+            `
+          };
 
         await transporter.sendMail(mailOptions);
         return res.json({ success: true });
@@ -353,7 +372,7 @@ app.post('/subscribe', async (req, res) => {
 });
 
 
-// Endpoint pentru anularea abonarii
+
 // Endpoint pentru anularea abonarii
 app.post('/unsubscribe', async (req, res) => {
     const { email } = req.body;
@@ -379,23 +398,6 @@ app.post('/unsubscribe', async (req, res) => {
     } catch (error) {
         console.error('Eroare la trimiterea emailului de anulare a abonării:', error);
         return res.status(500).json({ success: false, message: 'Eroare la trimiterea emailului de anulare a abonării' });
-    }
-});
-
-// Endpoint pentru confirmarea anularii abonarii
-app.get('/unsubscribe/:email', async (req, res) => {
-    const { email } = req.params;
-
-    try {
-        const subscription = await Subscription.findOneAndDelete({ email });
-        if (!subscription) {
-            return res.status(400).json({ success: false, message: 'Email-ul nu este abonat.' });
-        }
-
-        return res.json({ success: true, message: 'Abonarea a fost anulată cu succes.' });
-    } catch (error) {
-        console.error('Eroare la anularea abonării:', error);
-        return res.status(500).json({ success: false, message: 'Eroare la anularea abonării' });
     }
 });
 
@@ -467,6 +469,177 @@ app.post('/checkpromocode', async (req, res) => {
     }
 });
 
+// Endpoint pentru actualizarea stocului
+app.post('/updatestock', async (req, res) => {
+    try {
+        const { id, stock } = req.body;
+        const product = await Product.findOneAndUpdate({ id }, { stock }, { new: true });
+        if (product) {
+            res.json({ success: true, product });
+        } else {
+            res.status(404).json({ success: false, message: 'Produsul nu a fost găsit' });
+        }
+    } catch (error) {
+        console.error("Error updating stock:", error);
+        res.status(500).json({ success: false, message: 'Error updating stock' });
+    }
+});
+
+//Schema pentru comanda
+const orderSchema = new mongoose.Schema({
+    contactDetails: {
+      email: String,
+    },
+    shippingDetails: {
+      country: String,
+      firstName: String,
+      lastName: String,
+      company: String,
+      address: String,
+      postalCode: String,
+      city: String,
+      county: String,
+      phone: String,
+    },
+    deliveryMethod: String,
+    paymentMethod: String,
+    cardDetails: {
+      cardNumber: String,
+      expiryDate: String,
+      cvv: String,
+      cardHolder: String,
+    },
+    subtotal: Number,
+    shippingCost: Number,
+    total: Number,
+    promoCode: String,
+    promoDiscount: Number,
+    cartItems: [
+        {
+          productId: String,
+          productName: String,
+          quantity: Number,
+          price: Number
+        }
+      ],
+    date: {
+      type: Date,
+      default: Date.now,
+    },
+  });
+  
+  const Order = mongoose.model('Order', orderSchema);
+  
+
+  //Endpoit pentru plasarea comenzii
+  app.post('/placeorder', async (req, res) => {
+    try {
+        console.log('Order Details:', req.body);
+        const { contactDetails, shippingDetails, deliveryMethod, paymentMethod, cardDetails, subtotal, shippingCost, total, promoCode, promoDiscount, cartItems } = req.body;
+
+        const insufficientStockItems = [];
+        for (const item of cartItems) {
+            const product = await Product.findOne({ id: item.productId });
+            console.log(`Product ID: ${item.productId}, Product:`, product);
+            if (!product || product.stock < item.quantity) {
+                insufficientStockItems.push(product ? product.name : item.productId);
+            }
+        }
+
+        if (insufficientStockItems.length > 0) {
+            return res.status(400).json({ success: false, message: 'Stocul este insuficient pentru următoarele produse: ' + insufficientStockItems.join(', ') });
+        }
+
+        const order = new Order({
+            contactDetails,
+            shippingDetails,
+            deliveryMethod,
+            paymentMethod,
+            cardDetails,
+            subtotal,
+            shippingCost,
+            total,
+            promoCode,
+            promoDiscount,
+            cartItems 
+        });
+
+        await order.save();
+
+        for (const item of cartItems) {
+            await Product.updateOne(
+                { id: item.productId },
+                { $inc: { stock: -item.quantity } }
+            );
+        }
+
+        const formattedCartItems = cartItems.map(item => 
+            `${item.productName} - Cantitate: ${item.quantity} - Preț: ${item.price} RON`
+        ).join('\n');
+
+        const mailOptions = {
+            from: 'contactexotique2@gmail.com',
+            to: contactDetails.email,
+            subject: 'Confirmare comandă',
+            text: `Dragă ${shippingDetails.firstName},\n\nComanda ta a fost plasată cu succes. Detaliile comenzii sunt următoarele:\n\nProduse:\n${formattedCartItems}\n\nSubtotal: ${subtotal} RON\nCost de livrare: ${shippingCost} RON\nDiscount: ${promoDiscount} RON\nTotal: ${total} RON\n\nMulțumim pentru cumpărăturile făcute!\n\nCu stimă,\nEchipa Exotique`,
+            html: `
+              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px; background-color: #f9f9f9;">
+                <h2 style="color: #333; text-align: center;">Confirmare comandă</h2>
+                <p style="font-size: 16px; color: #555;">Dragă ${shippingDetails.firstName},</p>
+                <p style="font-size: 16px; color: #555;">Comanda ta a fost plasată cu succes. Detaliile comenzii sunt următoarele:</p>
+                <table style="width: 100%; border-collapse: collapse;">
+                  <thead>
+                    <tr>
+                      <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Produs</th>
+                      <th style="border: 1px solid #ddd; padding: 8px; text-align: right;">Cantitate</th>
+                      <th style="border: 1px solid #ddd; padding: 8px; text-align: right;">Preț</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${cartItems.map(item => `
+                      <tr>
+                        <td style="border: 1px solid #ddd; padding: 8px;">${item.productName}</td>
+                        <td style="border: 1px solid #ddd; padding: 8px; text-align: right;">${item.quantity}</td>
+                        <td style="border: 1px solid #ddd; padding: 8px; text-align: right;">${item.price} RON</td>
+                      </tr>
+                    `).join('')}
+                  </tbody>
+                </table>
+                <p style="font-size: 16px; color: #555;">Subtotal: ${subtotal} RON</p>
+                <p style="font-size: 16px; color: #555;">Cost de livrare: ${shippingCost} RON</p>
+                <p style="font-size: 16px; color: #555;">Discount: ${promoDiscount} RON</p>
+                <p style="font-size: 16px; font-weight: bold; color: #333;">Total: ${total} RON</p>
+                <p style="font-size: 16px; color: #555;">Mulțumim pentru cumpărăturile făcute!</p>
+                <p style="font-size: 16px; color: #555;">Cu stimă,</p>
+                <p style="font-size: 16px; color: #555;">Echipa Exotique</p>
+                <hr style="border: 0; border-top: 1px solid #ddd; margin: 20px 0;">
+                <p style="font-size: 12px; color: #999; text-align: center;">
+                  Exotique, București, România<br>
+                  Vă urăm o zi buna in continuare!
+                </p>
+              </div>
+            `
+          };
+
+        await transporter.sendMail(mailOptions);
+
+        res.status(200).json({ success: true, order });
+    } catch (error) {
+        console.error('Eroare la plasarea comenzii:', error);
+        res.status(500).json({ success: false, message: 'Eroare la plasarea comenzii. Detalii complete: ' + error.message });
+    }
+});
+
+
+
+ //Endpoint pentru actualizarea cantitatii unui produs din cos
+app.post('/updatecartitemquantity', fetchUser, async (req, res) => {
+    const { itemId, quantity } = req.body;
+    let userData = await Users.findOne({ _id: req.user.id });
+    userData.cartData[itemId] = quantity;
+    await Users.findOneAndUpdate({ _id: req.user.id }, { cartData: userData.cartData });
+    res.send("Updated");
+});
 
 
 app.listen(port, (error) => {

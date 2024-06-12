@@ -21,7 +21,7 @@ const Breadcrumb = (props) => {
 
     return (
         <div className='breadcrumb'>
-            <span onClick={navigateToHome}>HOME</span> 
+            <span onClick={navigateToHome}>Acasă</span> 
             <img src={arrow_icon} alt="" /> 
             <span onClick={navigateToCategory}>{product.category}</span> 
             <img src={arrow_icon} alt="" /> 

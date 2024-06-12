@@ -6,6 +6,7 @@ import CategorieMagazin from './Pages/CategorieMagazin';
 import Produse from './Pages/Produse';
 import Cos from './Pages/Cos';
 import LoginSignup from './Pages/LoginSignup';
+import Checkout from './Pages/Checkout';
 import Footer from './Components/Footer/Footer';
 import banner_decoratii from './Components/Assets/banner_decoratii.png'
 import banner_lumina from './Components/Assets/banner_lumina.png'
@@ -26,6 +27,7 @@ function App() {
         <Route path='/produse/:productId' element={<Produse />} />
         <Route path='/cos' element={<Cos/>}/>
         <Route path='/login' element={<LoginSignup/>}/>
+        <Route path="/checkout" element={<Checkout />} />
       </Routes>
       <Footer/>
       </BrowserRouter>

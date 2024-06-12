@@ -71,7 +71,7 @@ const LoginSignup = () => {
         
         <button onClick={()=>{state==="Login"?login():signup()}}>Continuă</button>
         {state==="Inregistreaza-te"?
-        <p className="loginsignup-login">Deja ai cont? <span onClick={()=>{setState("Login")}} >Intra în cont</span></p>:
+        <p className="loginsignup-login">Deja ai cont? <span onClick={()=>{setState("Login")}} >Intră în cont</span></p>:
         <p className="loginsignup-login">Nu ai cont ? <span onClick={()=>{setState("Inregistreaza-te")}} >Apasă aici!</span></p>}
         <div className="loginsignup-agree">
           <input type="checkbox" name='' id='' />

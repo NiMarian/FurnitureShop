@@ -9,12 +9,11 @@ const CategorieMagazin = (props) => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [productsToShow, setProductsToShow] = useState([]);
   const [visibleCount, setVisibleCount] = useState(12);
-  const [sortOrder, setSortOrder] = useState('asc'); // state for sort order
+  const [sortOrder, setSortOrder] = useState('asc');
 
   useEffect(() => {
     let filtered = all_product.filter(item => item.category === props.category);
     
-    // Apply sorting
     if (sortOrder === 'asc') {
       filtered.sort((a, b) => a.new_price - b.new_price);
     } else if (sortOrder === 'desc') {
@@ -31,7 +30,7 @@ const CategorieMagazin = (props) => {
     if (visibleCount < totalProducts) {
       setVisibleCount(prevCount => Math.min(prevCount + 12, totalProducts));
     } else {
-      setVisibleCount(12); // Reset to initial number of products
+      setVisibleCount(12);
     }
   };
 
