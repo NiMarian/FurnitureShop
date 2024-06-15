@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import add_product_icon from '../../assets/Product_Cart.png'
 import list_product_icon from '../../assets/Product_list_icon.png'
 import promo_icon from '../../assets/promo_icon.png'
+import statistics_icon from '../../assets/statistics_icon.png'
 
 const Sidebar = () => {
   return (
@@ -24,6 +25,12 @@ const Sidebar = () => {
             <div className="sidebar-item">
                 <img src={promo_icon} alt="" />
                 <p>Adaugă promocode</p>
+             </div>
+        </Link>
+        <Link to={'/statistics'} style={{textDecoration:"none"}}>
+            <div className="sidebar-item">
+                <img src={statistics_icon} alt="" />
+                <p>Statistici</p>
              </div>
         </Link>
     </div>

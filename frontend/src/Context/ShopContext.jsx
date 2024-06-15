@@ -192,7 +192,8 @@ const ShopContextProvider = (props) => {
     applyPromoCode, 
     discount, 
     total, 
-    updateCartItemQuantity 
+    updateCartItemQuantity,
+    setCartItems
   };
 
   return (

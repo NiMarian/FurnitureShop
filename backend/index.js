@@ -98,6 +98,10 @@ const productSchema = new mongoose.Schema({
         type: Boolean,
         default: true,
     },
+    soldCount: {
+        type: Number,
+        default: 0,
+    },
 });
 
 const Product = mongoose.model("Product", productSchema);
@@ -531,16 +535,15 @@ const orderSchema = new mongoose.Schema({
   const Order = mongoose.model('Order', orderSchema);
   
 
-  //Endpoit pentru plasarea comenzii
-  app.post('/placeorder', async (req, res) => {
+
+//Endpoit pentru plasarea comenzii
+app.post('/placeorder', async (req, res) => {
     try {
-        console.log('Order Details:', req.body);
         const { contactDetails, shippingDetails, deliveryMethod, paymentMethod, cardDetails, subtotal, shippingCost, total, promoCode, promoDiscount, cartItems } = req.body;
 
         const insufficientStockItems = [];
         for (const item of cartItems) {
             const product = await Product.findOne({ id: item.productId });
-            console.log(`Product ID: ${item.productId}, Product:`, product);
             if (!product || product.stock < item.quantity) {
                 insufficientStockItems.push(product ? product.name : item.productId);
             }
@@ -569,7 +572,7 @@ const orderSchema = new mongoose.Schema({
         for (const item of cartItems) {
             await Product.updateOne(
                 { id: item.productId },
-                { $inc: { stock: -item.quantity } }
+                { $inc: { stock: -item.quantity, soldCount: item.quantity } }
             );
         }
 
@@ -632,6 +635,8 @@ const orderSchema = new mongoose.Schema({
 
 
 
+
+
  //Endpoint pentru actualizarea cantitatii unui produs din cos
 app.post('/updatecartitemquantity', fetchUser, async (req, res) => {
     const { itemId, quantity } = req.body;
@@ -640,6 +645,70 @@ app.post('/updatecartitemquantity', fetchUser, async (req, res) => {
     await Users.findOneAndUpdate({ _id: req.user.id }, { cartData: userData.cartData });
     res.send("Updated");
 });
+
+// Endpoint pentru a obține cel mai vândut produs și cel mai nevândut produs
+app.get('/bestsellingproduct', async (req, res) => {
+    try {
+        let bestSellingProduct = await Product.findOne().sort({ soldCount: -1 });
+        let leastSellingProduct = await Product.findOne().sort({ soldCount: 1 });
+
+        res.json({
+            success: true,
+            bestSellingProduct,
+            leastSellingProduct
+        });
+    } catch (error) {
+        console.error('Error fetching products:', error);
+        res.status(500).json({ success: false, message: 'Error fetching products' });
+    }
+});
+
+// Endpoint pentru vânzările totale într-o anumită zi și detaliile comenzilor
+app.get('/totalsales', async (req, res) => {
+    const { date } = req.query;
+
+    if (!date) {
+        return res.status(400).json({ success: false, message: 'Data este necesară' });
+    }
+
+    try {
+        const startDate = new Date(date);
+        const endDate = new Date(date);
+        endDate.setDate(endDate.getDate() + 1);
+
+        const orders = await Order.find({
+            date: {
+                $gte: startDate,
+                $lt: endDate,
+            },
+        });
+
+        const totalSales = orders.reduce((sum, order) => sum + order.total, 0);
+
+        const formattedOrders = orders.map(order => {
+            return {
+                products: order.cartItems.map(item => ({
+                    productName: item.productName,
+                    quantity: item.quantity,
+                    price: item.price
+                })),
+                total: order.total,
+                promoDiscount: order.promoDiscount
+            };
+        });
+
+        res.json({ 
+            success: true, 
+            totalSales,
+            orders: formattedOrders
+        });
+    } catch (error) {
+        console.error('Error fetching total sales:', error);
+        res.status(500).json({ success: false, message: 'Error fetching total sales' });
+    }
+});
+
+
 
 
 app.listen(port, (error) => {

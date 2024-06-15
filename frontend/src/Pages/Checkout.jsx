@@ -1,9 +1,11 @@
 import React, { useState,useEffect, useContext } from 'react';
 import './CSS/Checkout.css';
 import { ShopContext } from '../Context/ShopContext';
+import { useNavigate } from 'react-router-dom';
 
 const Checkout = () => {
-  const { cartItems, all_product, updateCartItemQuantity } = useContext(ShopContext);
+  const { cartItems, all_product, updateCartItemQuantity, setCartItems } = useContext(ShopContext);
+  const navigate = useNavigate();
   const [promoCode, setPromoCode] = useState("");
   const [discount, setDiscount] = useState(0);
   const [discountValue, setDiscountValue] = useState(0);
@@ -172,7 +174,9 @@ const Checkout = () => {
   
       const data = await response.json();
       if (data.success) {
-        console.log('Comanda plasată cu succes:', data.order);
+        alert('Comanda a fost plasată cu succes!');
+        setCartItems({});
+        navigate('/');
       } else {
         console.error('Eroare la plasarea comenzii:', data.message);
         alert('Eroare la plasarea comenzii: ' + data.message);

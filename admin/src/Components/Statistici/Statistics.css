@@ -1,0 +1,141 @@
+.statistics {
+  padding: 20px;
+  background-color: #f5f5f5;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.statistics h2 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+  font-size: 1.8em;
+}
+
+.product-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.best-selling-product,
+.least-selling-product {
+  flex: 1;
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.best-selling-product h3,
+.least-selling-product h3 {
+  color: #333;
+  margin-bottom: 10px;
+  font-size: 1.5em;
+}
+
+.best-selling-product p,
+.least-selling-product p {
+  margin: 5px 0;
+  color: #666;
+  font-size: 1.1em;
+}
+
+.best-selling-product img,
+.least-selling-product img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin-top: 10px;
+  border-radius: 10px;
+}
+
+.no-product {
+  text-align: center;
+  color: #666;
+  font-size: 1.2em;
+  padding: 20px;
+}
+
+.sales-container {
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+}
+
+.sales-container h3 {
+  color: #333;
+  margin-bottom: 10px;
+  font-size: 1.5em;
+}
+
+.sales-container input[type="date"] {
+  display: block;
+  margin: 0 auto 10px;
+  padding: 5px;
+  font-size: 1.1em;
+}
+
+.sales-container p {
+  text-align: center;
+  color: #666;
+  font-size: 1.2em;
+  margin: 10px 0;
+}
+
+.sales-container h4 {
+  margin: 10px 0 5px;
+  color: #333;
+  font-size: 1.3em;
+}
+
+.sales-container div {
+  border-top: 1px solid #ddd;
+  padding-top: 10px;
+  margin-top: 10px;
+}
+
+.sales-container div h4 {
+  margin-top: 0;
+}
+
+.sales-container div p {
+  margin: 5px 0;
+  color: #666;
+  font-size: 1.1em;
+}
+
+.sales-container div p strong {
+  color: #333;
+  font-size: 1.2em;
+}
+
+.orders-list {
+  max-height: 300px;
+  overflow-y: auto; 
+  margin-top: 20px;
+  border-top: 1px solid #ddd;
+  padding-top: 10px;
+}
+
+.order-item {
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+}
+
+.order-item p {
+  margin: 5px 0;
+  color: #666;
+  font-size: 1.1em;
+}
+
+.order-item p strong {
+  color: #333;
+  font-size: 1.2em;
+}

@@ -11,14 +11,21 @@
 
 .sidebar-item {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   margin: 0px 20px;
   padding: 5px 10px;
   border-radius: 6px;
   background: #f6f6f6;
-  gap: 20px;
+  gap: 10px;
   cursor: pointer;
+  text-align: center;
+}
+
+.sidebar-item img{
+  width: 40px;
+  height: 40px;
 }
 
 @media (max-width: 800px) {
