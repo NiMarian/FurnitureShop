@@ -51,23 +51,22 @@ const AfisareComenzi = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ id: orderId }), // Trimitem orderId pentru a anula comanda
+        body: JSON.stringify({ id: orderId }),
       });
   
       const data = await response.json();
       if (data.success) {
-        // Actualizăm comanda anulată în starea locală
         const updatedOrders = orders.map(order =>
           order._id === orderId ? { ...order, status: 'Anulat' } : order
         );
         setOrders(updatedOrders);
       } else {
         console.error('Failed to cancel order');
-        // Opțional, afișăm un mesaj de eroare utilizatorului
+
       }
     } catch (error) {
       console.error('Error cancelling order:', error);
-      // Opțional, afișăm un mesaj de eroare utilizatorului
+
     }
   };
   
