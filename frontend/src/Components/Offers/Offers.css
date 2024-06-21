@@ -3,8 +3,9 @@
   display: flex;
   margin: auto;
   padding: 0px 140px;
-  margin-bottom: 150px;
+  margin-bottom: 50px;
   background: linear-gradient(180deg, #8f4c0e, #f8eac322 60%);
+  height: 300px;
 }
 
 .offers-left {
@@ -16,7 +17,7 @@
 
 .offers-left h1 {
   color: #171717;
-  font-size: 80px;
+  font-size: 35px;
   font-weight: 600;
 }
 
@@ -45,6 +46,9 @@
   align-items: center;
   justify-content: flex-end;
   padding-top: 50px;
+}
+.offers-right img{
+  height: 350px;
 }
 
 @media (max-width: 1280px) {
@@ -129,6 +133,7 @@
   }
   .offers-right img {
     width: 120px;
+    height: 200px;
   }
   .offers-left button {
     width: 120px;

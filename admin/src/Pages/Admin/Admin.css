@@ -1,8 +1,10 @@
-.admin{
-    display: flex;
+.admin {
+  display: flex;
+  align-items: flex-start;
 }
-@media(max-width:800px){
-    .admin{
-        flex-direction: column;
-    }
+
+@media (max-width: 800px) {
+  .admin {
+    flex-direction: column;
+  }
 }

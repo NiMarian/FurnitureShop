@@ -1,6 +1,7 @@
 .hero {
   background: linear-gradient(180deg, #8f4c0e, #f8eac322 60%);
   display: flex;
+  height: 300px;
 }
 
 .hero-left {
@@ -11,17 +12,19 @@
   gap: 20px;
   padding-left: 180px;
   line-height: 1.1;
+  height: 300px;
 }
 
 .hero-left h2 {
   color: #090909;
-  font-size: 26px;
+  font-size: 20px;
   font-weight: 600;
+  margin-top: 30px;
 }
 
 .hero-left p {
   color: #171717;
-  font-size: 100px;
+  font-size: 35px;
   font-weight: 700;
 }
 
@@ -45,6 +48,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+.hero-right img{
+  height: 300px;
+  width: 300px;
 }
 
 @media (max-width: 1280px) {

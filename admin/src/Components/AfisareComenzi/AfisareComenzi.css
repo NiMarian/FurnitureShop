@@ -1,0 +1,121 @@
+.orders-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.orders-header {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+  font-size: 24px;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+  font-size: 24px;
+}
+.orders-table-container {
+  overflow-y: auto;
+  max-height: 600px; /* Sau înălțimea dorită */
+  width: 100%;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.orders-table {
+  width: 100%;
+  border-collapse: collapse;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.orders-table th,
+.orders-table td {
+  border: 1px solid #ddd;
+  padding: 12px 15px;
+  text-align: left;
+  color: #333;
+}
+
+.orders-table th {
+  background-color: #f4f4f4;
+  font-weight: bold;
+  text-transform: uppercase;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.orders-table button {
+  height: 58px;
+  outline: none;
+  border: none;
+  background: #dd8c40;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+  .orders-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .orders-table thead {
+    display: none;
+  }
+
+  .orders-table tr {
+    display: block;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  }
+
+  .orders-table td {
+    display: block;
+    text-align: right;
+    padding-left: 50%;
+    position: relative;
+    word-wrap: break-word;
+    white-space: normal;
+  }
+
+  .orders-table td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 15px;
+    width: calc(50% - 30px);
+    padding-right: 10px;
+    text-align: left;
+    font-weight: bold;
+    color: #555;
+    word-wrap: break-word;
+    white-space: normal;
+  }
+
+  .orders-table td ul {
+    padding-left: 0;
+    list-style-type: none;
+    margin: 0;
+  }
+
+  .orders-table td ul li {
+    text-align: left;
+    padding: 5px 0;
+    border-bottom: 1px solid #ddd;
+    word-wrap: break-word;
+    white-space: normal;
+  }
+
+  .orders-table td ul li:last-child {
+    border-bottom: none;
+  }
+}

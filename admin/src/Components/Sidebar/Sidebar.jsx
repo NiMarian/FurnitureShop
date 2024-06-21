@@ -7,6 +7,7 @@ import promo_icon from '../../assets/promo_icon.png'
 import statistics_icon from '../../assets/statistics_icon.png'
 
 const Sidebar = () => {
+
   return (
     <div className='sidebar'>
         <Link to={'/addproduct'} style={{textDecoration:"none"}}>
@@ -24,13 +25,19 @@ const Sidebar = () => {
         <Link to={'/addpromocode'} style={{textDecoration:"none"}}>
             <div className="sidebar-item">
                 <img src={promo_icon} alt="" />
-                <p>Adaugă promocode</p>
+                <p>Promocode</p>
              </div>
         </Link>
         <Link to={'/statistics'} style={{textDecoration:"none"}}>
             <div className="sidebar-item">
                 <img src={statistics_icon} alt="" />
                 <p>Statistici</p>
+             </div>
+        </Link>
+        <Link to={'/comenzi'} style={{textDecoration:"none"}}>
+            <div className="sidebar-item">
+                <img src={statistics_icon} alt="" />
+                <p>Comenzi</p>
              </div>
         </Link>
     </div>

@@ -11,6 +11,7 @@ const { type } = require("os");
 const { log, error } = require("console");
 const fs = require("fs");
 const nodemailer = require('nodemailer');
+const ObjectId = mongoose.Types.ObjectId;
 
 app.use(express.json());
 app.use(cors());
@@ -109,11 +110,7 @@ const Product = mongoose.model("Product", productSchema);
 // Adaugare produs endpoint
 app.post('/addproduct', async (req, res) => {
     try {
-        let products = await Product.find({});
-        let id = products.length > 0 ? products[products.length - 1].id + 1 : 1;
-
         const product = new Product({
-            id: id,
             name: req.body.name,
             image: req.body.image,
             category: req.body.category,
@@ -329,18 +326,25 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-//Creare endpoint pentru gestionarea abonarii
 app.post('/subscribe', async (req, res) => {
     const { email } = req.body;
+    console.log('Email primit pentru abonare:', email);
 
     try {
+        if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
+            console.log('Email invalid:', email);
+            return res.status(400).json({ success: false, message: 'Email invalid.' });
+        }
+
         let existingSubscription = await Subscription.findOne({ email });
         if (existingSubscription) {
+            console.log('Email deja abonat:', email);
             return res.status(400).json({ success: false, message: 'Email-ul este deja abonat.' });
         }
 
         const newSubscription = new Subscription({ email });
         await newSubscription.save();
+        console.log('Abonare reușită pentru email:', email);
 
         const unsubscribeLink = `http://localhost:${port}/unsubscribe/${email}`;
 
@@ -361,13 +365,15 @@ app.post('/subscribe', async (req, res) => {
                 <hr style="border: 0; border-top: 1px solid #ddd;">
                 <p style="font-size: 12px; color: #999;">
                   Exotique, București, România<br>
-                  Dacă nu v-ați abonat la acest newsletter, Click pe <a href="${unsubscribeLink}" style="color: #1a73e8;">acest link</a> pentru a confirma anularea abonamentului..
+                  Dacă nu v-ați abonat la acest newsletter, Click pe <a href="${unsubscribeLink}" style="color: #1a73e8;">acest link</a> pentru a confirma anularea abonamentului.
                 </p>
               </div>
             `
           };
+          
 
         await transporter.sendMail(mailOptions);
+        console.log('Email trimis cu succes către:', email);
         return res.json({ success: true });
     } catch (error) {
         console.error('Eroare la trimiterea emailului de abonare:', error);
@@ -391,7 +397,7 @@ app.post('/unsubscribe', async (req, res) => {
 
         const mailOptions = {
             from: 'contactexotique2@gmail.com',
-            to: email,
+            to: subscription.email,
             subject: 'Anulare abonament',
             text: `Click pe linkul următor pentru a confirma anularea abonamentului: ${unsubscribeLink}`,
             html: `<p>Click pe <a href="${unsubscribeLink}">acest link</a> pentru a confirma anularea abonamentului.</p>`
@@ -454,6 +460,25 @@ app.post('/addpromocode', async (req, res) => {
         res.status(500).json({ success: false, message: 'Error adding promo code' });
     }
 });
+
+// Endpoint pentru ștergerea unui promo code
+app.delete('/removepromocode', async (req, res) => {
+    try {
+        await PromoCode.findOneAndDelete({ code: req.body.code });
+        console.log("Removed promo code");
+        res.json({
+            success: true,
+            code: req.body.code,
+        });
+    } catch (error) {
+        console.error("Error removing promo code:", error);
+        res.status(500).json({
+            success: false,
+            message: 'Error removing promo code'
+        });
+    }
+});
+
 
 
 const PromoCode = mongoose.model('PromoCode', promoCodeSchema);
@@ -530,6 +555,12 @@ const orderSchema = new mongoose.Schema({
       type: Date,
       default: Date.now,
     },
+    status: {
+        type: String,
+        enum: ['În așteptare', 'În procesare', 'Expediat', 'Livrat', 'Anulat'],
+        default: 'În așteptare',
+      },
+    
   });
   
   const Order = mongoose.model('Order', orderSchema);
@@ -582,7 +613,7 @@ app.post('/placeorder', async (req, res) => {
 
         const mailOptions = {
             from: 'contactexotique2@gmail.com',
-            to: contactDetails.email,
+            to: order.contactDetails.email,
             subject: 'Confirmare comandă',
             text: `Dragă ${shippingDetails.firstName},\n\nComanda ta a fost plasată cu succes. Detaliile comenzii sunt următoarele:\n\nProduse:\n${formattedCartItems}\n\nSubtotal: ${subtotal} RON\nCost de livrare: ${shippingCost} RON\nDiscount: ${promoDiscount} RON\nTotal: ${total} RON\n\nMulțumim pentru cumpărăturile făcute!\n\nCu stimă,\nEchipa Exotique`,
             html: `
@@ -617,6 +648,7 @@ app.post('/placeorder', async (req, res) => {
                 <p style="font-size: 16px; color: #555;">Echipa Exotique</p>
                 <hr style="border: 0; border-top: 1px solid #ddd; margin: 20px 0;">
                 <p style="font-size: 12px; color: #999; text-align: center;">
+                <p>...</p><p>Pentru a anula comanda, click <a href="http://localhost:${port}/cancel-order/${order._id}">aici</a>.</p>
                   Exotique, București, România<br>
                   Vă urăm o zi buna in continuare!
                 </p>
@@ -708,7 +740,128 @@ app.get('/totalsales', async (req, res) => {
     }
 });
 
+// Endpoint pentru a obține toate comenzile
+app.get('/allorders', async (req, res) => {
+    try {
+        const orders = await Order.find({});
+        res.json({ success: true, orders });
+    } catch (error) {
+        console.error('Error fetching orders:', error);
+        res.status(500).json({ success: false, message: 'Error fetching orders' });
+    }
+});
 
+// Endpoint pentru ștergerea unei comenzi
+app.delete('/deleteorder', async (req, res) => {
+    const { id } = req.body;
+
+    try {
+        const deletedOrder = await Order.findByIdAndDelete(id);
+
+        if (deletedOrder) {
+            res.json({ success: true });
+        } else {
+            res.status(404).json({ success: false, message: 'Comanda nu a fost găsită' });
+        }
+    } catch (error) {
+        console.error('Eroare la ștergerea comenzii:', error);
+        res.status(500).json({ success: false, message: 'Eroare la ștergerea comenzii' });
+    }
+});
+
+// Endpoint pentru anularea comenzii
+app.put('/cancelorderadmin', async (req, res) => {
+    const { id } = req.body;
+
+    try {
+        const order = await Order.findByIdAndUpdate(id, { status: 'Anulat' }, { new: true });
+
+        if (!order) {
+            return res.status(404).json({ success: false, message: 'Comanda nu a fost găsită' });
+        }
+
+        // Actualizarea stocului produselor
+        for (const item of order.cartItems) {
+            await Product.findOneAndUpdate(
+                { id: item.productId },
+                { $inc: { stock: item.quantity } }
+            );
+        }
+
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Error cancelling order:', error);
+        res.status(500).json({ success: false, message: 'Eroare la anularea comenzii' });
+    }
+});
+
+  
+app.get('/cancel-order/:orderId', async (req, res) => {
+    const { orderId } = req.params;
+
+    try {
+      
+        const order = await Order.findByIdAndUpdate(
+            orderId,
+            { status: 'Anulat' },
+            { new: true }
+        );
+
+       
+        if (!order) {
+            return res.status(404).json({ success: false, message: 'Comanda nu a fost găsită' });
+        }
+
+       
+        for (const item of order.cartItems) {
+            await Product.updateOne(
+                { id: item.productId }, 
+                { $inc: { stock: item.quantity } }
+            );
+        }
+
+        if (order.contactDetails && order.contactDetails.email) {
+            const mailOptions = {
+                from: 'contactexotique2@gmail.com',
+                to: order.contactDetails.email,
+                subject: 'Confirmare anulare comandă',
+                text: `Dragă ${order.shippingDetails.firstName},\n\nComanda ta cu ID-ul ${orderId} a fost anulată cu succes.`,
+                html: `
+                <html>
+                    <head>
+                        <style>
+                            body {
+                                font-family: Arial, sans-serif;
+                                line-height: 1.6;
+                            }
+                            .container {
+                                padding: 20px;
+                            }
+                            .greeting {
+                                font-weight: bold;
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="container">
+                            <p class="greeting">Dragă ${order.shippingDetails.firstName},</p>
+                            <p>Comanda ta cu ID-ul <strong>${orderId}</strong> a fost anulată cu succes.</p>
+                        </div>
+                    </body>
+                </html>
+                `,
+            };
+
+            await transporter.sendMail(mailOptions);
+        }
+
+    
+        return res.json({ success: true, order });
+    } catch (error) {
+        console.error('Eroare la anularea comenzii:', error);
+        return res.status(500).json({ success: false, message: 'Eroare la anularea comenzii' });
+    }
+});
 
 
 app.listen(port, (error) => {

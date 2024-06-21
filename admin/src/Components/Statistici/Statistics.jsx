@@ -7,6 +7,7 @@ const Statistics = () => {
     const [selectedDate, setSelectedDate] = useState('');
     const [totalSales, setTotalSales] = useState(0);
     const [orders, setOrders] = useState([]);
+    const [tva, setTva] = useState(0);
 
     useEffect(() => {
         fetch('http://localhost:4000/bestsellingproduct')
@@ -26,6 +27,10 @@ const Statistics = () => {
         setSelectedDate(e.target.value);
     };
 
+    const handleTvaChange = (e) => {
+        setTva(parseFloat(e.target.value));
+    };
+
     useEffect(() => {
         if (selectedDate) {
             fetch(`http://localhost:4000/totalsales?date=${selectedDate}`)
@@ -42,6 +47,14 @@ const Statistics = () => {
         }
     }, [selectedDate]);
 
+    const calculatePriceWithTva = (price) => {
+        return (price * (1 + tva / 100)).toFixed(2);
+    };
+
+    const calculateTotalWithTva = (total) => {
+        return (total * (1 + tva / 100)).toFixed(2);
+    };
+
     return (
         <div className="statistics">
             <h2>Statistici</h2>
@@ -51,7 +64,7 @@ const Statistics = () => {
                         <h3>Cel mai vândut produs</h3>
                         <p>Nume: {bestSellingProduct.name}</p>
                         <p>Categorie: {bestSellingProduct.category}</p>
-                        <p>Preț: {bestSellingProduct.new_price} RON</p>
+                        <p>Preț: {calculatePriceWithTva(bestSellingProduct.new_price)} RON (cu TVA)</p>
                         <p>Produse vândute: {bestSellingProduct.soldCount}</p>
                         <img src={bestSellingProduct.image} alt={bestSellingProduct.name} />
                     </div>
@@ -63,13 +76,22 @@ const Statistics = () => {
                         <h3>Cel mai puțin vândut produs</h3>
                         <p>Nume: {leastSellingProduct.name}</p>
                         <p>Categorie: {leastSellingProduct.category}</p>
-                        <p>Preț: {leastSellingProduct.new_price} RON</p>
+                        <p>Preț: {calculatePriceWithTva(leastSellingProduct.new_price)} RON (cu TVA)</p>
                         <p>Produse vândute: {leastSellingProduct.soldCount}</p>
                         <img src={leastSellingProduct.image} alt={leastSellingProduct.name} />
                     </div>
                 ) : (
                     <p className="no-product">Nu există cel mai puțin vândut produs</p>
                 )}
+            </div>
+            <div className="tva-container">
+                <h3>Setare TVA</h3>
+                <input
+                    type="number"
+                    value={tva}
+                    onChange={handleTvaChange}
+                    placeholder="Introduceți TVA-ul (%)"
+                />
             </div>
             <div className="sales-container">
                 <h3>Vânzări totale pe zi</h3>
@@ -78,7 +100,8 @@ const Statistics = () => {
                     value={selectedDate}
                     onChange={handleDateChange}
                 />
-                <p>Vânzări totale: {totalSales} RON</p>
+                <p>Vânzări totale: {calculateTotalWithTva(totalSales)} RON (cu TVA)</p>
+                
                 <div className="orders-list">
                     <h3>Comenzi pentru data selectată:</h3>
                     {orders.map((order, index) => (
@@ -88,11 +111,11 @@ const Statistics = () => {
                                 <div key={productIndex}>
                                     <p>Produs: {product.productName}</p>
                                     <p>Cantitate: {product.quantity}</p>
-                                    <p>Preț: {product.price} RON</p>
+                                    <p>Preț: {calculatePriceWithTva(product.price)} RON (cu TVA)</p>
                                 </div>
                             ))}
                             <p>Reducerea: {order.promoDiscount}</p>
-                            <p><strong>Valoarea totală a comenzii: {order.total} RON</strong></p>
+                            <p><strong>Valoarea totală a comenzii: {calculateTotalWithTva(order.total)} RON (cu TVA)</strong></p>
                         </div>
                     ))}
                 </div>

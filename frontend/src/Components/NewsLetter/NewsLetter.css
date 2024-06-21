@@ -6,9 +6,10 @@
   justify-content: center;
   margin: auto;
   padding: 0px 140px;
-  margin-bottom: 150px;
+  margin-bottom: 50px;
   background: linear-gradient(180deg, #8f4c0e, #f8eac322 60%);
   gap: 30px;
+  height: 300px;
 }
 
 .newsletter h1 {
