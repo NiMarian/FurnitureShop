@@ -20,7 +20,7 @@ const NewsLetter = () => {
         alert('Te-ai abonat cu succes la Exotique !');
       }
       else {
-        alert('Nu ai reusit sa te abonezi, incearca din nou.');
+        alert('Nu am reușit să te abonăm. Te rugăm să încerci din nou, deoarece este posibil ca adresa de e-mail introdusă să fie deja înregistrată.');
       }
     } catch(error){
       console.error('Eroare la abonarea newsletter: ',error);

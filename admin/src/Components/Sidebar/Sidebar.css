@@ -28,6 +28,33 @@
   height: 40px;
 }
 
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  height: 120vh;
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.sidebar-item img {
+  margin-right: 10px;
+}
+
+.sidebar-item.logout {
+  background-color: #ee9f38;
+  color: white;
+  text-align: center;
+}
+
+.sidebar-item.logout:hover {
+  background-color: #ff1a1a;
+}
+
 @media (max-width: 800px) {
   .sidebar {
     padding: 30px 0px;

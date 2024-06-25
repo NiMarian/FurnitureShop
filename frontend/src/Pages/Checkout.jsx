@@ -86,7 +86,7 @@ const Checkout = () => {
         alert("Promo code invalid");
       }
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Eroare:", error);
       alert("Eroare la aplicarea promo code-ului");
     }
   };

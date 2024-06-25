@@ -12,10 +12,10 @@ const AfisareComenzi = () => {
         if (data.success) {
           setOrders(data.orders);
         } else {
-          console.error('Failed to fetch orders');
+          console.error('Eroare la preluarea comenzilor');
         }
       } catch (error) {
-        console.error('Error fetching orders:', error);
+        console.error('Eroare la preluarea comenzilor:', error);
       }
     };
 
@@ -37,10 +37,10 @@ const AfisareComenzi = () => {
       if (data.success) {
         setOrders(orders.filter(order => order._id !== orderId));
       } else {
-        console.error('Failed to cancel order');
+        console.error('Anularea comenzii eșuată');
       }
     } catch (error) {
-      console.error('Error cancelling order:', error);
+      console.error('Anularea comenzii eșuată:', error);
     }
   };
 
@@ -61,11 +61,11 @@ const AfisareComenzi = () => {
         );
         setOrders(updatedOrders);
       } else {
-        console.error('Failed to cancel order');
+        console.error('Nu s-a putut anula comanda');
 
       }
     } catch (error) {
-      console.error('Error cancelling order:', error);
+      console.error('Nu s-a putut anula comanda:', error);
 
     }
   };

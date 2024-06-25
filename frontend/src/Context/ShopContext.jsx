@@ -35,7 +35,7 @@ const ShopContextProvider = (props) => {
         const data = await response.json();
         setAll_Product(data);
       } catch (error) {
-        console.error("Error fetching products:", error);
+        console.error("Eroare la preluarea produselor:", error);
       }
     };
 
@@ -67,29 +67,6 @@ const ShopContextProvider = (props) => {
     }
   }, []);
 
-
-  const applyPromoCode = async () => {
-    try {
-      let response = await fetch('http://localhost:4000/checkpromocode', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ code: promoCode }),
-      });
-      let data = await response.json();
-      if (data.success) {
-        setDiscount(data.discount);
-        setTotal(getTotalCartAmount() * (1 - data.discount / 100));
-        alert("Promo code aplicat");
-      } else {
-        alert("Promo code invalid");
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      alert("Eroare la aplicarea promo code-ului");
-    }
-  };
 
   const addToCart = (itemId) => {
     setCartItems((prev) => {
@@ -152,7 +129,7 @@ const ShopContextProvider = (props) => {
         .then((response) => response.json())
         .then((data) => {
           console.log(data);
-          applyPromoCode();
+
         });
     }
   };
@@ -189,7 +166,6 @@ const ShopContextProvider = (props) => {
     removeFromCart, 
     promoCode, 
     setPromoCode, 
-    applyPromoCode, 
     discount, 
     total, 
     updateCartItemQuantity,

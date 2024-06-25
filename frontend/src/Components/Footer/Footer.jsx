@@ -27,7 +27,7 @@ const Footer = () => {
                 <img src={pinterest_icon} alt="Pinterest Icon"/>
             </div>
             <div className="footer-icons-container">
-                <a href="http://localhost:5173/">
+                <a href="http://localhost:5173/admin">
                     <img src={whatsapp_icon} alt="WhatsApp Icon"/>
                 </a>
             </div>

@@ -43,7 +43,6 @@ const storage = multer.diskStorage({
 const upload = multer({storage:storage})
 
 //Upload endpoint imagini
-
 app.use('/images',express.static('upload/images'))
 
 app.post("/upload", upload.single('product'), (req, res) => {
@@ -151,7 +150,7 @@ app.post('/removeproduct', async (req, res) => {
     }
 });
 
-// Get all products endpoint
+// Obținerea produselor endpoint
 app.get('/allproducts', async (req, res) => {
     try {
         let products = await Product.find({});
@@ -167,7 +166,6 @@ app.get('/allproducts', async (req, res) => {
 });
 
 //Schema pentru crearea modelului User
-
 const Users = mongoose.model('Users',{
     name:{
         type:String,
@@ -193,7 +191,7 @@ app.post('/signup',async(req,res)=>{
 
     let check = await Users.findOne({email:req.body.email});
     if(check){
-        return res.status(400).json({success:false,errors:"Deja exista acest email."})
+        return res.status(400).json({success:false,errors:"Acest email este deja înregistrat."})
     }
     let cart = {};
     for (let i = 0; i < 300; i++) {
@@ -234,13 +232,45 @@ app.post('/login',async (req,res)=>{
             res.json({success:true,token});
         }
         else{
-            res.json({success:false,errors:"Parola gresita"});
+            res.json({success:false,errors:"Parola introdusă este greșita"});
         }
     }
     else{
-        res.json({succes:false,errors:"Email gresit"});
+        res.json({succes:false,errors:"Email-ul introdus nu este înregistrat."});
     }
 })
+
+// Schema pentru crearea modelului Admin
+const Admin = mongoose.model('Admin', {
+  email: {
+    type: String,
+    unique: true,
+  },
+  password: {
+    type: String,
+  },
+});
+
+// Endpoint pentru logarea adminului
+app.post('/admin/login', async (req, res) => {
+  let admin = await Admin.findOne({ email: req.body.email });
+  if (admin) {
+    const passCompare = req.body.password === admin.password;
+    if (passCompare) {
+      const data = {
+        admin: {
+          id: admin.id
+        }
+      }
+      const token = jwt.sign(data, 'secret_admin');
+      res.json({ success: true, token });
+    } else {
+      res.json({ success: false, errors: "Parola introdusă este greșită" });
+    }
+  } else {
+    res.json({ success: false, errors: "Email-ul introdus nu este înregistrat." });
+  }
+});
 
 //Creare endpoint pentru colectii noi 
 app.get('/newcollections', async(req,res)=>{
@@ -251,7 +281,6 @@ app.get('/newcollections', async(req,res)=>{
 })
 
 //Creare endpoint pentru popular
-
 app.get('/popularindecoratiuni',async (req,res)=>{
     let products = await Product.find({category:"decoratiuni"});
     let popular_in_decoratiuni = products.slice(0,4);
@@ -333,7 +362,7 @@ app.post('/subscribe', async (req, res) => {
     try {
         if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
             console.log('Email invalid:', email);
-            return res.status(400).json({ success: false, message: 'Email invalid.' });
+            return res.status(400).json({ success: false, message: 'Email-ul introdus este invalid.' });
         }
 
         let existingSubscription = await Subscription.findOne({ email });
@@ -456,8 +485,8 @@ app.post('/addpromocode', async (req, res) => {
         await promoCode.save();
         res.json({ success: true });
     } catch (error) {
-        console.error("Error adding promo code:", error);
-        res.status(500).json({ success: false, message: 'Error adding promo code' });
+        console.error("Eroare la adaugarea promo code-ului:", error);
+        res.status(500).json({ success: false, message: 'Eroare la adaugarea promo code-ului' });
     }
 });
 
@@ -465,16 +494,16 @@ app.post('/addpromocode', async (req, res) => {
 app.delete('/removepromocode', async (req, res) => {
     try {
         await PromoCode.findOneAndDelete({ code: req.body.code });
-        console.log("Removed promo code");
+        console.log("Promo code șters");
         res.json({
             success: true,
             code: req.body.code,
         });
     } catch (error) {
-        console.error("Error removing promo code:", error);
+        console.error("Eroare la ștergerea promo code-ului:", error);
         res.status(500).json({
             success: false,
-            message: 'Error removing promo code'
+            message: 'Eroare la ștergerea promo code-ului'
         });
     }
 });
@@ -493,8 +522,8 @@ app.post('/checkpromocode', async (req, res) => {
             res.json({ success: false });
         }
     } catch (error) {
-        console.error("Error checking promo code:", error);
-        res.status(500).json({ success: false, message: 'Error checking promo code' });
+        console.error("Eroare la verificarea promo code-ului:", error);
+        res.status(500).json({ success: false, message: 'Eroare la verificarea promo code-ului' });
     }
 });
 
@@ -509,8 +538,8 @@ app.post('/updatestock', async (req, res) => {
             res.status(404).json({ success: false, message: 'Produsul nu a fost găsit' });
         }
     } catch (error) {
-        console.error("Error updating stock:", error);
-        res.status(500).json({ success: false, message: 'Error updating stock' });
+        console.error("Eroare la actualizarea stocului:", error);
+        res.status(500).json({ success: false, message: 'Eroare la actualizarea stocului' });
     }
 });
 
@@ -665,17 +694,26 @@ app.post('/placeorder', async (req, res) => {
     }
 });
 
-
-
-
-
- //Endpoint pentru actualizarea cantitatii unui produs din cos
+//Endpoint pentru actualizarea cantitatii unui produs din cos
 app.post('/updatecartitemquantity', fetchUser, async (req, res) => {
     const { itemId, quantity } = req.body;
     let userData = await Users.findOne({ _id: req.user.id });
     userData.cartData[itemId] = quantity;
     await Users.findOneAndUpdate({ _id: req.user.id }, { cartData: userData.cartData });
     res.send("Updated");
+});
+
+
+
+
+
+ //Endpoint pentru actualizarea cantitatii unui produs din cos
+ app.post('/updatecartitemquantity', fetchUser, async (req, res) => {
+    const { itemId, quantity } = req.body;
+    let userData = await Users.findOne({ _id: req.user.id });
+    userData.cartData[itemId] = quantity;
+    await Users.findOneAndUpdate({ _id: req.user.id }, { cartData: userData.cartData });
+    res.json({ success: true, message: "Updated" });
 });
 
 // Endpoint pentru a obține cel mai vândut produs și cel mai nevândut produs
@@ -735,8 +773,8 @@ app.get('/totalsales', async (req, res) => {
             orders: formattedOrders
         });
     } catch (error) {
-        console.error('Error fetching total sales:', error);
-        res.status(500).json({ success: false, message: 'Error fetching total sales' });
+        console.error('Eroare la preluarea totalului vânzărilor:', error);
+        res.status(500).json({ success: false, message: 'Eroare la preluarea totalului vânzărilor.' });
     }
 });
 
@@ -746,8 +784,8 @@ app.get('/allorders', async (req, res) => {
         const orders = await Order.find({});
         res.json({ success: true, orders });
     } catch (error) {
-        console.error('Error fetching orders:', error);
-        res.status(500).json({ success: false, message: 'Error fetching orders' });
+        console.error('Eroare la preluarea comenzilor:', error);
+        res.status(500).json({ success: false, message: 'Eroare la preluarea comenzilor' });
     }
 });
 
@@ -790,7 +828,7 @@ app.put('/cancelorderadmin', async (req, res) => {
 
         res.json({ success: true });
     } catch (error) {
-        console.error('Error cancelling order:', error);
+        console.error('Eroare la anularea comenzii:', error);
         res.status(500).json({ success: false, message: 'Eroare la anularea comenzii' });
     }
 });

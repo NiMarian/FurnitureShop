@@ -17,10 +17,10 @@ const Statistics = () => {
                     setBestSellingProduct(data.bestSellingProduct);
                     setLeastSellingProduct(data.leastSellingProduct);
                 } else {
-                    console.error('Failed to fetch best selling and least selling products:', data.message);
+                    console.error('Nu s-a putut prelua lista produselor cu cele mai mari și cele mai mici vânzări.:', data.message);
                 }
             })
-            .catch(error => console.error('Error fetching products:', error));
+            .catch(error => console.error('Eroare la preluarea produselor:', error));
     }, []);
 
     const handleDateChange = (e) => {
@@ -40,10 +40,10 @@ const Statistics = () => {
                         setTotalSales(data.totalSales);
                         setOrders(data.orders || []);
                     } else {
-                        console.error('Failed to fetch total sales:', data.message);
+                        console.error('Nu s-a putut prelua totalul vânzărilor:', data.message);
                     }
                 })
-                .catch(error => console.error('Error fetching total sales:', error));
+                .catch(error => console.error('Eroare la preluarea totalului vânzărilor:', error));
         }
     }, [selectedDate]);
 
