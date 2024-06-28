@@ -475,6 +475,8 @@ const promoCodeSchema = new mongoose.Schema({
     },
 });
 
+const PromoCode = mongoose.model('PromoCode', promoCodeSchema);
+
 // Endpoint pentru adăugarea unui promo code
 app.post('/addpromocode', async (req, res) => {
     try {
@@ -509,8 +511,6 @@ app.delete('/removepromocode', async (req, res) => {
 });
 
 
-
-const PromoCode = mongoose.model('PromoCode', promoCodeSchema);
 
 // Endpoint pentru verificarea unui promo code
 app.post('/checkpromocode', async (req, res) => {
@@ -591,7 +591,6 @@ const orderSchema = new mongoose.Schema({
       },
     
   });
-  
   const Order = mongoose.model('Order', orderSchema);
   
 
@@ -693,18 +692,6 @@ app.post('/placeorder', async (req, res) => {
         res.status(500).json({ success: false, message: 'Eroare la plasarea comenzii. Detalii complete: ' + error.message });
     }
 });
-
-//Endpoint pentru actualizarea cantitatii unui produs din cos
-app.post('/updatecartitemquantity', fetchUser, async (req, res) => {
-    const { itemId, quantity } = req.body;
-    let userData = await Users.findOne({ _id: req.user.id });
-    userData.cartData[itemId] = quantity;
-    await Users.findOneAndUpdate({ _id: req.user.id }, { cartData: userData.cartData });
-    res.send("Updated");
-});
-
-
-
 
 
  //Endpoint pentru actualizarea cantitatii unui produs din cos

@@ -1,7 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
 import './CSS/CategorieMagazin.css';
 import { ShopContext } from '../Context/ShopContext';
-import dropdown_icon from '../Components/Assets/dropdown_icon.png';
 import Item from '../Components/Item/Item';
 
 const CategorieMagazin = (props) => {
