@@ -21,7 +21,30 @@ const AfisareComenzi = () => {
 
     fetchOrders();
   }, []);
-  
+
+  const updateOrderStatus = async (orderId, newStatus) => {
+    try {
+      const response = await fetch(`http://localhost:4000/updatestatus`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id: orderId, status: newStatus }),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        const updatedOrders = orders.map(order =>
+          order._id === orderId ? { ...order, status: newStatus } : order
+        );
+        setOrders(updatedOrders);
+      } else {
+        console.error(`Nu s-a putut actualiza starea comenzii la ${newStatus}`);
+      }
+    } catch (error) {
+      console.error(`Nu s-a putut actualiza starea comenzii la ${newStatus}:`, error);
+    }
+  };
 
   const handleDeleteOrder = async (orderId) => {
     try {
@@ -30,7 +53,7 @@ const AfisareComenzi = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ id: orderId }), 
+        body: JSON.stringify({ id: orderId }),
       });
 
       const data = await response.json();
@@ -45,31 +68,8 @@ const AfisareComenzi = () => {
   };
 
   const handleCancelOrder = async (orderId) => {
-    try {
-      const response = await fetch(`http://localhost:4000/cancelorderadmin`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ id: orderId }),
-      });
-  
-      const data = await response.json();
-      if (data.success) {
-        const updatedOrders = orders.map(order =>
-          order._id === orderId ? { ...order, status: 'Anulat' } : order
-        );
-        setOrders(updatedOrders);
-      } else {
-        console.error('Nu s-a putut anula comanda');
-
-      }
-    } catch (error) {
-      console.error('Nu s-a putut anula comanda:', error);
-
-    }
+    updateOrderStatus(orderId, 'Anulat');
   };
-  
 
   return (
     <div className="orders-container">
@@ -114,6 +114,22 @@ const AfisareComenzi = () => {
                   >
                     Anulează Comanda
                   </button>
+                  {order.status !== 'Anulat' && (
+                    <>
+                      <button 
+                        onClick={() => updateOrderStatus(order._id, 'Expediat')} 
+                        disabled={order.status !== 'În procesare'}
+                      >
+                        Expediat
+                      </button>
+                      <button 
+                        onClick={() => updateOrderStatus(order._id, 'Livrat')} 
+                        disabled={order.status !== 'Expediat'}
+                      >
+                        Livrat
+                      </button>
+                    </>
+                  )}
                 </td>
               </tr>
             ))}

@@ -888,6 +888,24 @@ app.get('/cancel-order/:orderId', async (req, res) => {
     }
 });
 
+// Endpoint pentru actualizarea stării comenzii
+app.put('/updatestatus', async (req, res) => {
+    const { id, status } = req.body;
+  
+    try {
+      const order = await Order.findByIdAndUpdate(id, { status: status }, { new: true });
+  
+      if (!order) {
+        return res.status(404).json({ success: false, message: 'Comanda nu a fost găsită' });
+      }
+  
+      res.json({ success: true, order });
+    } catch (error) {
+      console.error('Eroare la actualizarea stării comenzii:', error);
+      res.status(500).json({ success: false, message: 'Eroare la actualizarea stării comenzii' });
+    }
+  });
+
 
 app.listen(port, (error) => {
     if (!error) {
