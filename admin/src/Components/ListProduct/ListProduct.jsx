@@ -68,7 +68,7 @@ const ListProduct = () => {
                         <img src={product.image} alt="" className="listproduct-product-icon" />
                         <p>{product.name}</p>
                         <p>{product.old_price} RON</p>
-                        <p>{product.new_price} RON</p>
+                        <p>{product.new_price_with_tva} RON (cu TVA)</p>
                         <p>{product.category}</p>
                         {editingStock === product.id ? (
                             <>

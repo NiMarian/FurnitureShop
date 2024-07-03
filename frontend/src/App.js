@@ -12,6 +12,8 @@ import banner_decoratii from './Components/Assets/banner_decoratii.png'
 import banner_lumina from './Components/Assets/banner_lumina.png'
 import banner_mobila from './Components/Assets/banner_mobila.png'
 import ShopContextProvider from './Context/ShopContext';
+import UserProfile from './Components/UserProfile/UserProfile';
+import UserAddresses from './Components/UserAddresses/UserAddresses';
 
 
 function App() {
@@ -28,6 +30,8 @@ function App() {
         <Route path='/cos' element={<Cos/>}/>
         <Route path='/login' element={<LoginSignup/>}/>
         <Route path="/checkout" element={<Checkout />} />
+        <Route path="/profile" element={<UserProfile />} />
+        <Route path="/profile/addresses" element={<UserAddresses />} />
       </Routes>
       <Footer/>
       </BrowserRouter>

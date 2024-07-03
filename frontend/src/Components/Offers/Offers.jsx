@@ -9,7 +9,6 @@ const Offers = () => {
             <h1>Ofertă </h1>
             <h1>Explorează ofertele chiar acum.</h1>
             <p>Nu mai aștepta !</p>
-            <button>Vezi acum !</button>
         </div>
         <div className="offers-right">
             <img src={exclusive_image} alt=""/>

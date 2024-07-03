@@ -4,10 +4,11 @@ import './Statistics.css';
 const Statistics = () => {
     const [bestSellingProduct, setBestSellingProduct] = useState(null);
     const [leastSellingProduct, setLeastSellingProduct] = useState(null);
-    const [selectedDate, setSelectedDate] = useState('');
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
     const [totalSales, setTotalSales] = useState(0);
     const [orders, setOrders] = useState([]);
-    const [tva, setTva] = useState(0);
+    const tva = 19;
 
     useEffect(() => {
         fetch('http://localhost:4000/bestsellingproduct')
@@ -24,16 +25,17 @@ const Statistics = () => {
     }, []);
 
     const handleDateChange = (e) => {
-        setSelectedDate(e.target.value);
-    };
-
-    const handleTvaChange = (e) => {
-        setTva(parseFloat(e.target.value));
+        const { name, value } = e.target;
+        if (name === 'startDate') {
+            setStartDate(value);
+        } else {
+            setEndDate(value);
+        }
     };
 
     useEffect(() => {
-        if (selectedDate) {
-            fetch(`http://localhost:4000/totalsales?date=${selectedDate}`)
+        if (startDate && endDate) {
+            fetch(`http://localhost:4000/totalsales?startDate=${startDate}&endDate=${endDate}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
@@ -45,7 +47,7 @@ const Statistics = () => {
                 })
                 .catch(error => console.error('Eroare la preluarea totalului vânzărilor:', error));
         }
-    }, [selectedDate]);
+    }, [startDate, endDate]);
 
     const calculatePriceWithTva = (price) => {
         return (price * (1 + tva / 100)).toFixed(2);
@@ -84,26 +86,32 @@ const Statistics = () => {
                     <p className="no-product">Nu există cel mai puțin vândut produs</p>
                 )}
             </div>
-            <div className="tva-container">
-                <h3>Setare TVA</h3>
-                <input
-                    type="number"
-                    value={tva}
-                    onChange={handleTvaChange}
-                    placeholder="Introduceți TVA-ul (%)"
-                />
-            </div>
             <div className="sales-container">
-                <h3>Vânzări totale pe zi</h3>
-                <input
-                    type="date"
-                    value={selectedDate}
-                    onChange={handleDateChange}
-                />
+                <h3>Vânzări totale pe perioadă</h3>
+                <div className="date-range">
+                    <label>
+                        De la:
+                        <input
+                            type="date"
+                            name="startDate"
+                            value={startDate}
+                            onChange={handleDateChange}
+                        />
+                    </label>
+                    <label>
+                        Până la:
+                        <input
+                            type="date"
+                            name="endDate"
+                            value={endDate}
+                            onChange={handleDateChange}
+                        />
+                    </label>
+                </div>
                 <p>Vânzări totale: {calculateTotalWithTva(totalSales)} RON (cu TVA)</p>
                 
                 <div className="orders-list">
-                    <h3>Comenzi pentru data selectată:</h3>
+                    <h3>Comenzi pentru perioada selectată:</h3>
                     {orders.map((order, index) => (
                         <div key={index} className="order-item">
                             <h4>Comandă {index + 1}:</h4>

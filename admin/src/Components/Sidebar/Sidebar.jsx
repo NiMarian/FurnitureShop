@@ -11,46 +11,48 @@ const Sidebar = () => {
 
   const handleLogout = () => {
     localStorage.removeItem('adminToken');
-    navigate('/admin/login');
-  }
+    localStorage.removeItem('auth-token');
+    localStorage.removeItem('isAdmin');
+    window.location.href = 'http://localhost:3000';
+  };
 
   return (
     <div className='sidebar'>
-        <Link to='addproduct' style={{textDecoration:"none"}}>
-            <div className="sidebar-item">
-                <img src={add_product_icon} alt="Add Product" />
-                <p>Adaugă produs</p>
-            </div>
-        </Link>
-        <Link to='listproduct' style={{textDecoration:"none"}}>
-            <div className="sidebar-item">
-                <img src={list_product_icon} alt="List Product" />
-                <p>Listă produs</p>
-             </div>
-        </Link>
-        <Link to='addpromocode' style={{textDecoration:"none"}}>
-            <div className="sidebar-item">
-                <img src={promo_icon} alt="Promo Code" />
-                <p>Promocode</p>
-             </div>
-        </Link>
-        <Link to='statistics' style={{textDecoration:"none"}}>
-            <div className="sidebar-item">
-                <img src={statistics_icon} alt="Statistics" />
-                <p>Statistici</p>
-             </div>
-        </Link>
-        <Link to='comenzi' style={{textDecoration:"none"}}>
-            <div className="sidebar-item">
-                <img src={statistics_icon} alt="Orders" />
-                <p>Comenzi</p>
-             </div>
-        </Link>
-        <div className="sidebar-item logout" onClick={handleLogout}>
-            <p>Logout</p>
+      <Link to='addproduct' style={{ textDecoration: "none" }}>
+        <div className="sidebar-item">
+          <img src={add_product_icon} alt="Adaugă Produs" />
+          <p>Adaugă produs</p>
         </div>
+      </Link>
+      <Link to='listproduct' style={{ textDecoration: "none" }}>
+        <div className="sidebar-item">
+          <img src={list_product_icon} alt="Listă Produs" />
+          <p>Listă produs</p>
+        </div>
+      </Link>
+      <Link to='addpromocode' style={{ textDecoration: "none" }}>
+        <div className="sidebar-item">
+          <img src={promo_icon} alt="Promo Code" />
+          <p>Cod Promoțional</p>
+        </div>
+      </Link>
+      <Link to='statistics' style={{ textDecoration: "none" }}>
+        <div className="sidebar-item">
+          <img src={statistics_icon} alt="Statistici" />
+          <p>Statistici</p>
+        </div>
+      </Link>
+      <Link to='comenzi' style={{ textDecoration: "none" }}>
+        <div className="sidebar-item">
+          <img src={statistics_icon} alt="Comenzi" />
+          <p>Comenzi</p>
+        </div>
+      </Link>
+      <div className="sidebar-item logout" onClick={handleLogout}>
+        <p>Logout</p>
+      </div>
     </div>
-  )
+  );
 }
 
 export default Sidebar;

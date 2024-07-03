@@ -104,6 +104,22 @@
   color: #555;
 }
 
+.productdisplay-quantity {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.productdisplay-quantity input {
+  width: 60px;
+  padding: 10px;
+  font-size: 16px;
+  text-align: center;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
 @media (max-width: 1280px) {
   .productdisplay {
     margin: 0px 60px;

@@ -14,9 +14,9 @@ const CategorieMagazin = (props) => {
     let filtered = all_product.filter(item => item.category === props.category);
     
     if (sortOrder === 'asc') {
-      filtered.sort((a, b) => a.new_price - b.new_price);
+      filtered.sort((a, b) => a.new_price_with_tva - b.new_price_with_tva);
     } else if (sortOrder === 'desc') {
-      filtered.sort((a, b) => b.new_price - a.new_price);
+      filtered.sort((a, b) => b.new_price_with_tva - a.new_price_with_tva);
     }
     
     setFilteredProducts(filtered);
@@ -52,12 +52,18 @@ const CategorieMagazin = (props) => {
             <option value="asc">Preț: Crescător</option>
             <option value="desc">Preț: Descrescător</option>
           </select>
-          
         </div>
       </div>
       <div className="shopcategory-products">
         {productsToShow.map((item, i) => (
-          <Item key={i} id={item.id} name={item.name} image={item.image} new_price={item.new_price} old_price={item.old_price} />
+          <Item 
+            key={i} 
+            id={item.id} 
+            name={item.name} 
+            image={item.image} 
+            new_price_with_tva={item.new_price_with_tva} 
+            old_price={item.old_price} 
+          />
         ))}
       </div>
       {totalProducts > 12 && (

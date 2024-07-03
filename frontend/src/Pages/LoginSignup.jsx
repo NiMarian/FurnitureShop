@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './CSS/LoginSignup.css';
 
 const LoginSignup = () => {
@@ -9,6 +10,8 @@ const LoginSignup = () => {
     email: ""
   });
   const [isChecked, setIsChecked] = useState(false);
+  const [isAdminLogin, setIsAdminLogin] = useState(false);
+  const navigate = useNavigate();
 
   const changeHandler = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -18,23 +21,38 @@ const LoginSignup = () => {
     setIsChecked(e.target.checked);
   };
 
+  const checkboxAdminHandler = (e) => {
+    setIsAdminLogin(e.target.checked);
+  };
+
   const login = async () => {
     console.log("Login reusit", formData);
-    let responseData;
-    await fetch('http://localhost:4000/login', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/form-data',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formData),
-    }).then((response) => response.json()).then((data) => responseData = data);
+    try {
+      const endpoint = isAdminLogin ? 'http://localhost:4000/admin/login' : 'http://localhost:4000/login';
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await response.json();
 
-    if (responseData.success) {
-      localStorage.setItem('auth-token', responseData.token);
-      window.location.replace('/');
-    } else {
-      alert(responseData.errors);
+      if (data.success) {
+        localStorage.setItem('auth-token', data.token);
+
+        if (isAdminLogin) {
+          window.location.href = 'http://localhost:5173/admin';
+        } else {
+          localStorage.setItem('isAdmin', data.isAdmin ? 'true' : 'false');
+          window.location.href = 'http://localhost:3000';
+        }
+      } else {
+        alert(data.errors);
+      }
+    } catch (error) {
+      console.error("Eroare în timpul logării:", error);
+      alert("A intervenit o eroare. Te rog să încerci din nou.");
     }
   };
 
@@ -57,7 +75,7 @@ const LoginSignup = () => {
     if (responseData.success) {
       alert("Înregistrarea a avut loc cu succes! Spor la cumpărături!");
       localStorage.setItem('auth-token', responseData.token);
-      window.location.replace('/');
+      window.location.href = 'http://localhost:3000';
     } else {
       alert(responseData.errors);
     }
@@ -81,6 +99,11 @@ const LoginSignup = () => {
           <div className="loginsignup-agree">
             <input type="checkbox" onChange={checkboxHandler} />
             <p>Continuând, confirm că sunt de acord cu termenii de utilizare și politica de confidențialitate.</p>
+          </div>}
+        {state !== "Inregistreaza-te" &&
+          <div>
+            <input type="checkbox" onChange={checkboxAdminHandler} />
+            <label>Login ca admin</label>
           </div>}
       </div>
     </div>

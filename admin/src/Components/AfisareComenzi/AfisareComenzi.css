@@ -1,6 +1,6 @@
 .orders-container {
   padding: 20px;
-  max-width: 1200px;
+  max-width: 1350px;
   margin: 0 auto;
 }
 
@@ -17,9 +17,10 @@ h2 {
   color: #333;
   font-size: 24px;
 }
+
 .orders-table-container {
   overflow-y: auto;
-  max-height: 600px;
+  max-height: 700px;
   width: 100%;
   margin-bottom: 20px;
   position: relative;
@@ -58,6 +59,15 @@ h2 {
   font-weight: 600;
   cursor: pointer;
   margin-bottom: 20px;
+}
+
+.orders-table th input {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-top: 5px;
 }
 
 @media (max-width: 768px) {

@@ -7,9 +7,7 @@ const Navbar = () => {
   return (
     <div className='navbar'>
         <img src={navlogo} alt="Logo" className="nav-logo" />
-        <a href="http://localhost:3000/">
-            <img src={navProfile} className="nav-profile" alt="Profile" />
-        </a>
+        <img src={navProfile} className="nav-profile" alt="Profile" />
     </div>
   )
 }

@@ -1,16 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './AddProduct.css';
 import upload_area from '../../assets/upload_area.svg';
 
 const AddProduct = () => {
     const [image, setImage] = useState(false);
     const [productDetails, setProductDetails] = useState({
+        id: "",
         name: "",
         image: "",
         category: "mobila",
         new_price: "",
-        old_price: ""
+        old_price: "",
+        description: ""
     });
+
+    useEffect(() => {
+        const fetchMaxId = async () => {
+            try {
+                const response = await fetch('http://localhost:4000/maxProductId');
+                const data = await response.json();
+                if (data.success) {
+                    setProductDetails(prevDetails => ({
+                        ...prevDetails,
+                        id: data.maxId + 1 
+                    }));
+                } else {
+                    console.error('Nu s-a reușit obținerea celui mai mare ID de produs');
+                }
+            } catch (error) {
+                console.error('Nu s-a reușit obținerea celui mai mare ID de produs:', error);
+            }
+        };
+
+        fetchMaxId();
+    }, []);
 
     const imageHandler = (e) => {
         setImage(e.target.files[0]);
@@ -20,7 +43,18 @@ const AddProduct = () => {
         setProductDetails({ ...productDetails, [e.target.name]: e.target.value });
     };
 
+    const isNumeric = (value) => {
+        return /^\d+(\.\d+)?$/.test(value);
+    };
+
     const Add_Product = async () => {
+        const { new_price, old_price } = productDetails;
+
+        if (!isNumeric(new_price) || !isNumeric(old_price)) {
+            alert("Prețul nu poate conține litere. Te rog introdu doar numere.");
+            return;
+        }
+
         console.log(productDetails);
         let responseData;
         let product = { ...productDetails };
@@ -38,22 +72,30 @@ const AddProduct = () => {
             if (responseData.success) {
                 product.image = responseData.image_url;
                 console.log(product);
-                let addProductResponse = await fetch('http://localhost:4000/addproduct', {
-                    method: 'POST',
-                    headers: {
-                        Accept: 'application/json',
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(product),
-                });
-                let addProductData = await addProductResponse.json();
-                addProductData.success ? alert("Produs adăugat") : alert("Eșuat");
+                try {
+                    let addProductResponse = await fetch('http://localhost:4000/addproduct', {
+                        method: 'POST',
+                        headers: {
+                            Accept: 'application/json',
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(product),
+                    });
+                    if (!addProductResponse.ok) {
+                        throw new Error('Server responded with status ' + addProductResponse.status);
+                    }
+                    let addProductData = await addProductResponse.json();
+                    addProductData.success ? alert("Produs adăugat") : alert("Eșuat");
+                } catch (error) {
+                    console.error("Produsul nu poate avea litere in pret:", error);
+                    alert("Produsul nu poate avea litere în preț.");
+                }
             } else {
                 alert("Eșuat la încărcarea imaginii");
             }
         } catch (error) {
             console.error("Error:", error);
-            alert("Eroare la adăugarea produsului");
+            alert("Eroare la încărcarea imaginii");
         }
     };
 
@@ -72,6 +114,10 @@ const AddProduct = () => {
                     <p>Preț ofertă</p>
                     <input value={productDetails.new_price} onChange={changeHandler} type="text" name='new_price' placeholder='Scrie aici' />
                 </div>
+            </div>
+            <div className="addproduct-itemfield">
+                <p>Descriere</p>
+                <textarea value={productDetails.description} onChange={changeHandler} name='description' placeholder='Scrie aici' rows="4" />
             </div>
             <div className="addproduct-itemfield">
                 <p>Categorie Produs</p>

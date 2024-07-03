@@ -28,7 +28,7 @@ mongoose.connect("mongodb+srv://nicutamarian:7SdQPYGTpRgq55Mz@cluster0.50bjgvw.m
 // Creare API
 
 app.get("/",(req,res)=>{
-    res.send("Express App is running")
+    res.send("Express App rulează")
 })
 
 // Image Storage
@@ -40,10 +40,10 @@ const storage = multer.diskStorage({
     }
 });
 
-const upload = multer({storage:storage})
+const upload = multer({ storage: storage });
 
-//Upload endpoint imagini
-app.use('/images',express.static('upload/images'))
+// Upload endpoint imagini
+app.use('/images', express.static('upload/images'));
 
 app.post("/upload", upload.single('product'), (req, res) => {
     if (req.file) {
@@ -54,12 +54,31 @@ app.post("/upload", upload.single('product'), (req, res) => {
     } else {
         res.status(400).json({
             success: 0,
-            message: 'Image upload failed'
+            message: 'Încărcarea imaginii a eșuat'
         });
     }
 });
 
-//Schema pentru produse
+const reviewSchema = new mongoose.Schema({
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Users',
+        required: true
+    },
+    userName: {
+        type: String,
+        required: true
+    },
+    text: {
+        type: String,
+        required: true
+    },
+    date: {
+        type: Date,
+        default: Date.now
+    }
+});
+
 const productSchema = new mongoose.Schema({
     id: {
         type: Number,
@@ -85,6 +104,10 @@ const productSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
+    new_price_with_tva: {
+        type: Number,
+        required: true,
+    },
     stock: {
         type: Number,
         required: true,
@@ -102,21 +125,52 @@ const productSchema = new mongoose.Schema({
         type: Number,
         default: 0,
     },
+    tva: {
+        type: Number,
+        default: 19,
+    },
+    description: {
+        type: String,
+        required: true,
+    },
+    reviews: [reviewSchema]
 });
 
 const Product = mongoose.model("Product", productSchema);
 
+// Endpoint pentru a obține id-ul maxim
+app.get('/maxProductId', async (req, res) => {
+    try {
+        const maxProduct = await Product.findOne().sort({ id: -1 }).exec();
+        const maxId = maxProduct ? maxProduct.id : 0;
+        res.json({ success: true, maxId });
+    } catch (error) {
+        console.error("Eroare la preluarea ID-ului maxim al produsului:", error);
+        res.status(500).json({ success: false, message: 'Eroare la preluarea ID-ului maxim al produsului' });
+    }
+});
+
 // Adaugare produs endpoint
 app.post('/addproduct', async (req, res) => {
     try {
+        const tva = 19;
+        const new_price_with_tva = req.body.new_price * (1 + tva / 100).toFixed(2);
+
         const product = new Product({
+            id: req.body.id,
             name: req.body.name,
             image: req.body.image,
             category: req.body.category,
             new_price: req.body.new_price,
             old_price: req.body.old_price,
+            new_price_with_tva: new_price_with_tva,
+            stock: req.body.stock,
+            date: req.body.date,
+            available: req.body.available,
+            soldCount: req.body.soldCount,
+            description: req.body.description,
         });
-
+        
         await product.save();
         console.log("Saved");
         res.json({
@@ -124,10 +178,10 @@ app.post('/addproduct', async (req, res) => {
             name: req.body.name,
         });
     } catch (error) {
-        console.error("Error adding product:", error);
+        console.error("Eroare la adăugarea produsului:", error);
         res.status(500).json({
             success: false,
-            message: 'Error adding product'
+            message: 'Eroare la adăugarea produsului'
         });
     }
 });
@@ -142,10 +196,10 @@ app.post('/removeproduct', async (req, res) => {
             id: req.body.id,
         });
     } catch (error) {
-        console.error("Error removing product:", error);
+        console.error("Eroare la ștergerea produsului.:", error);
         res.status(500).json({
             success: false,
-            message: 'Error removing product'
+            message: 'Eroare la ștergerea produsului.'
         });
     }
 });
@@ -157,34 +211,49 @@ app.get('/allproducts', async (req, res) => {
         console.log("All Products");
         res.json(products);
     } catch (error) {
-        console.error("Error fetching products:", error);
+        console.error("Eroare la preluarea produselor:", error);
         res.status(500).json({
             success: false,
-            message: 'Error fetching products'
+            message: 'Eroare la preluarea produselor'
         });
     }
 });
 
 //Schema pentru crearea modelului User
-const Users = mongoose.model('Users',{
-    name:{
-        type:String,
+const Users = mongoose.model('Users', {
+    name: {
+        type: String,
     },
-    email:{
-        type:String,
-        unique:true,
+    email: {
+        type: String,
+        unique: true,
     },
-    password:{
-        type:String,
+    password: {
+        type: String,
     },
-    cartData:{
-        type:Object,
+    cartData: {
+        type: Object,
     },
-    date:{
-        type:Date,
-        default:Date.now,
+    addresses: {
+        type: [{
+            country: String,
+            firstName: String,
+            lastName: String,
+            company: String,
+            address: String,
+            postalCode: String,
+            city: String,
+            county: String,
+            phone: String
+        }],
+        default: []
+    },
+    date: {
+        type: Date,
+        default: Date.now,
     }
-})
+});
+
 
 // Registrare user endpoint
 app.post('/signup',async(req,res)=>{
@@ -218,27 +287,27 @@ app.post('/signup',async(req,res)=>{
 
 
 //Creare endpoint pentru logare
-app.post('/login',async (req,res)=>{
-    let user = await Users.findOne({email:req.body.email});
-    if(user){
-        const passCompare = req.body.password === user.password;
-        if(passCompare){
-            const data = {
-                user:{
-                    id:user.id
-                }
-            }
-            const token = jwt.sign(data,'secret_ecom');
-            res.json({success:true,token});
+app.post('/login', async (req, res) => {
+    let user = await Users.findOne({ email: req.body.email });
+    if (user) {
+      const passCompare = req.body.password === user.password;
+      if (passCompare) {
+        const data = {
+          user: {
+            id: user.id
+          }
         }
-        else{
-            res.json({success:false,errors:"Parola introdusă este greșita"});
-        }
+        const token = jwt.sign(data, 'secret_ecom');
+        const isAdmin = false;
+        res.json({ success: true, token, isAdmin });
+      } else {
+        res.json({ success: false, errors: "Parola introdusă este greșită" });
+      }
+    } else {
+      res.json({ success: false, errors: "Email-ul introdus nu este înregistrat." });
     }
-    else{
-        res.json({succes:false,errors:"Email-ul introdus nu este înregistrat."});
-    }
-})
+  });
+  
 
 // Schema pentru crearea modelului Admin
 const Admin = mongoose.model('Admin', {
@@ -251,60 +320,76 @@ const Admin = mongoose.model('Admin', {
   },
 });
 
+
 // Endpoint pentru logarea adminului
 app.post('/admin/login', async (req, res) => {
-  let admin = await Admin.findOne({ email: req.body.email });
-  if (admin) {
-    const passCompare = req.body.password === admin.password;
-    if (passCompare) {
-      const data = {
-        admin: {
-          id: admin.id
+    let user = await Admin.findOne({ email: req.body.email });
+    if (user) {
+      const passCompare = req.body.password === user.password;
+      if (passCompare) {
+        const data = {
+          user: {
+            id: user.id
+          }
         }
+        const token = jwt.sign(data, 'secret_ecom');
+        const isAdmin = true;
+        res.json({ success: true, token, isAdmin });
+      } else {
+        res.json({ success: false, errors: "Parola introdusă este greșită" });
       }
-      const token = jwt.sign(data, 'secret_admin');
-      res.json({ success: true, token });
     } else {
-      res.json({ success: false, errors: "Parola introdusă este greșită" });
+      res.json({ success: false, errors: "Email-ul introdus nu este înregistrat." });
     }
-  } else {
-    res.json({ success: false, errors: "Email-ul introdus nu este înregistrat." });
-  }
-});
+  });
+  
+  
 
 //Creare endpoint pentru colectii noi 
-app.get('/newcollections', async(req,res)=>{
-    let products = await Product.find({});
-    let newcollection = products.slice(1).slice(-8);
-    console.log("Colectie noua luata");
-    res.send(newcollection);
-})
+app.get('/newcollections', async (req, res) => {
+    try {
+        let products = await Product.find({}).sort({ date: -1 }).limit(5);
+        console.log("New Collections:", products);  // Adaugă această linie
+        res.json(products);
+    } catch (error) {
+        console.error("Eroare la preluarea colecțiilor noi:", error);
+        res.status(500).json({
+            success: false,
+            message: 'Eroare la preluarea colecțiilor noi'
+        });
+    }
+});
 
 //Creare endpoint pentru popular
-app.get('/popularindecoratiuni',async (req,res)=>{
-    let products = await Product.find({category:"decoratiuni"});
-    let popular_in_decoratiuni = products.slice(0,4);
-    console.log("Popular in decoratiuni luat");
-    res.send(popular_in_decoratiuni);
-})
+app.get('/popularindecoratiuni', async (req, res) => {
+    try {
+        let products = await Product.find({ category: 'decoratiuni' }).sort({ soldCount: -1 }).limit(5);
+        console.log("Popular Products:", products);  // Adaugă această linie
+        res.json(products);
+    } catch (error) {
+        console.error("Eroare la preluarea produselor populare:", error);
+        res.status(500).json({
+            success: false,
+            message: 'Eroare la preluarea produselor populare'
+        });
+    }
+});
 
-//Creare middleware pentru a lua user
-const fetchUser = async(req,res,next)=>{
+// Middleware pentru autentificarea utilizatorului
+const fetchUser = async (req, res, next) => {
     const token = req.header('auth-token');
-    if(!token) {
-        res.status(401).send({errors:"Autentifica-te cu un token valid"})
+    if (!token) {
+        return res.status(401).send({ errors: "Autentifica-te cu un token valid" });
     }
-    else{
-        try {
-            const data = jwt.verify(token,'secret_ecom');
-            req.user = data.user;
-            next();
-        } catch (error) {
-            res.status(401).send({errors:"Autentifica-te cu un token valid"})
-            
-        }
+
+    try {
+        const data = jwt.verify(token, 'secret_ecom');
+        req.user = data.user;
+        next();
+    } catch (error) {
+        res.status(401).send({ errors: "Autentifica-te cu un token valid" });
     }
-}
+};
 
 //Creare endpoint pentru cartdata
 app.post('/addtocart',fetchUser, async(req,res)=>{
@@ -317,12 +402,12 @@ app.post('/addtocart',fetchUser, async(req,res)=>{
 
 //Creare endpoint sa stearga un produs din cartdata
 app.post('/removefromcart',fetchUser,async(req,res)=>{
-    console.log("Sters",req.body.itemId);
+    console.log("Șters",req.body.itemId);
     let userData = await Users.findOne({_id:req.user.id});
     if(userData.cartData[req.body.itemId]>0)
     userData.cartData[req.body.itemId] -= 1;
     await Users.findOneAndUpdate({_id:req.user.id},{cartData:userData.cartData});
-    res.send("Sters")
+    res.send("Șters")
 })
 
 //Creare endpoint sa ia datele din cartdata
@@ -527,6 +612,17 @@ app.post('/checkpromocode', async (req, res) => {
     }
 });
 
+// Endpoint pentru preluarea promo code-urilor
+app.get('/getpromocodes', async (req, res) => {
+    try {
+        const promoCodes = await PromoCode.find();
+        res.json({ success: true, promoCodes });
+    } catch (error) {
+        console.error("Eroare la preluarea promo code-urilor:", error);
+        res.status(500).json({ success: false, message: 'Eroare la preluarea promo code-urilor' });
+    }
+});
+
 // Endpoint pentru actualizarea stocului
 app.post('/updatestock', async (req, res) => {
     try {
@@ -598,7 +694,7 @@ const orderSchema = new mongoose.Schema({
 //Endpoit pentru plasarea comenzii
 app.post('/placeorder', async (req, res) => {
     try {
-        const { contactDetails, shippingDetails, deliveryMethod, paymentMethod, cardDetails, subtotal, shippingCost, total, promoCode, promoDiscount, cartItems } = req.body;
+        const { contactDetails, shippingDetails, deliveryMethod, paymentMethod, cardDetails, subtotal, shippingCost, total, promoCode, promoDiscount, vat, cartItems } = req.body;
 
         const insufficientStockItems = [];
         for (const item of cartItems) {
@@ -612,6 +708,10 @@ app.post('/placeorder', async (req, res) => {
             return res.status(400).json({ success: false, message: 'Stocul este insuficient pentru următoarele produse: ' + insufficientStockItems.join(', ') });
         }
 
+        const vatAmount = (subtotal * vat) / 100;
+
+        const totalWithVat = total + vatAmount;
+
         const order = new Order({
             contactDetails,
             shippingDetails,
@@ -620,7 +720,7 @@ app.post('/placeorder', async (req, res) => {
             cardDetails,
             subtotal,
             shippingCost,
-            total,
+            total: totalWithVat,
             promoCode,
             promoDiscount,
             cartItems 
@@ -686,6 +786,7 @@ app.post('/placeorder', async (req, res) => {
 
         await transporter.sendMail(mailOptions);
 
+
         res.status(200).json({ success: true, order });
     } catch (error) {
         console.error('Eroare la plasarea comenzii:', error);
@@ -700,7 +801,7 @@ app.post('/placeorder', async (req, res) => {
     let userData = await Users.findOne({ _id: req.user.id });
     userData.cartData[itemId] = quantity;
     await Users.findOneAndUpdate({ _id: req.user.id }, { cartData: userData.cartData });
-    res.json({ success: true, message: "Updated" });
+    res.json({ success: true, message: "Actualizat" });
 });
 
 // Endpoint pentru a obține cel mai vândut produs și cel mai nevândut produs
@@ -715,28 +816,28 @@ app.get('/bestsellingproduct', async (req, res) => {
             leastSellingProduct
         });
     } catch (error) {
-        console.error('Error fetching products:', error);
-        res.status(500).json({ success: false, message: 'Error fetching products' });
+        console.error('Eroare la preluarea produselor:', error);
+        res.status(500).json({ success: false, message: 'Eroare la preluarea produselor' });
     }
 });
 
 // Endpoint pentru vânzările totale într-o anumită zi și detaliile comenzilor
 app.get('/totalsales', async (req, res) => {
-    const { date } = req.query;
+    const { startDate, endDate } = req.query;
 
-    if (!date) {
-        return res.status(400).json({ success: false, message: 'Data este necesară' });
+    if (!startDate || !endDate) {
+        return res.status(400).json({ success: false, message: 'Ambele date sunt necesare' });
     }
 
     try {
-        const startDate = new Date(date);
-        const endDate = new Date(date);
-        endDate.setDate(endDate.getDate() + 1);
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        end.setDate(end.getDate() + 1);
 
         const orders = await Order.find({
             date: {
-                $gte: startDate,
-                $lt: endDate,
+                $gte: start,
+                $lt: end,
             },
         });
 
@@ -905,6 +1006,157 @@ app.put('/updatestatus', async (req, res) => {
       res.status(500).json({ success: false, message: 'Eroare la actualizarea stării comenzii' });
     }
   });
+
+// Endpoint pentru a goli coșul utilizatorului autentificat
+app.post('/clearcart', fetchUser, async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const user = await Users.findById(userId);
+        if (user) {
+            user.cartData = {};
+            for (let i = 0; i < 300; i++) {
+                user.cartData[i] = 0;
+            }
+            await user.save();
+            res.json({ success: true, message: "Coșul a fost golit cu succes." });
+        } else {
+            res.status(404).json({ success: false, message: "Utilizatorul nu a fost găsit." });
+        }
+    } catch (error) {
+        console.error("Eroare la golirea coșului:", error);
+        res.status(500).json({ success: false, message: "Eroare la golirea coșului" });
+    }
+});
+  
+
+// Endpoint pentru obținerea datelor utilizatorului autentificat
+app.get('/user', fetchUser, async (req, res) => {
+    try {
+      const user = await Users.findById(req.user.id);
+      if (!user) {
+        return res.status(404).json({ errors: "Utilizatorul nu a fost găsit" });
+      }
+  
+      const orders = await Order.find({ 'contactDetails.email': user.email });
+      
+      res.json({ user, orders });
+    } catch (error) {
+      console.error('Eroare la preluarea utilizatorului:', error);
+      res.status(500).json({ errors: "Eroare la preluarea utilizatorului" });
+    }
+  });
+
+/// Endpoint pentru obținerea adreselor utilizatorului
+app.get('/addresses', fetchUser, async (req, res) => {
+    try {
+        const user = await Users.findById(req.user.id);
+        if (!user) {
+            return res.status(404).json({ errors: "Utilizatorul nu a fost găsit" });
+        }
+        res.json({ addresses: user.addresses || [] });
+    } catch (error) {
+        console.error('Eroare la preluarea adreselor:', error);
+        res.status(500).json({ errors: "Eroare la preluarea adreselor" });
+    }
+});
+
+// Endpoint pentru adăugarea unei adrese noi
+app.post('/addresses', fetchUser, async (req, res) => {
+    try {
+        const user = await Users.findById(req.user.id);
+        if (!user) {
+            return res.status(404).json({ errors: "Utilizatorul nu a fost găsit" });
+        }
+        const { address } = req.body;
+        user.addresses = user.addresses ? [...user.addresses, address] : [address];
+        await user.save();
+        res.json({ addresses: user.addresses });
+    } catch (error) {
+        console.error('Eroare la adăugarea adresei:', error);
+        res.status(500).json({ errors: "Eroare la adăugarea adresei" });
+    }
+});
+
+// Endpoint pentru ștergerea unei adrese
+app.delete('/addresses/:index', fetchUser, async (req, res) => {
+    try {
+        const user = await Users.findById(req.user.id);
+        if (!user) {
+            return res.status(404).json({ errors: "Utilizatorul nu a fost găsit" });
+        }
+
+        const index = parseInt(req.params.index, 10);
+        if (isNaN(index) || index < 0 || index >= user.addresses.length) {
+            return res.status(400).json({ errors: "Index invalid" });
+        }
+
+        user.addresses.splice(index, 1);
+        await user.save();
+
+        res.json({ addresses: user.addresses });
+    } catch (error) {
+        console.error('Eroare la ștergerea adresei:', error);
+        res.status(500).json({ errors: "Eroare la ștergerea adresei" });
+    }
+});
+
+app.post('/addreview', async (req, res) => {
+    try {
+        const { productId, userId, userName, text } = req.body;
+
+        if (!productId || !userId || !userName || !text) {
+            return res.status(400).json({ success: false, message: 'Datele recenziei sunt incomplete' });
+        }
+
+        // Validare productId și userId
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            return res.status(400).json({ success: false, message: 'ID-ul utilizatorului este invalid' });
+        }
+
+        const product = await Product.findOne({ id: productId });
+        if (!product) {
+            return res.status(404).json({ success: false, message: 'Produsul nu a fost găsit' });
+        }
+
+        const newReview = {
+            userId: new mongoose.Types.ObjectId(userId),
+            userName,
+            text
+        };
+
+        product.reviews.push(newReview);
+        await product.save();
+
+        res.json({ success: true, message: 'Recenzia a fost adăugată cu succes' });
+    } catch (error) {
+        console.error('Eroare la adăugarea recenziei:', error);
+        res.status(500).json({ success: false, message: 'Eroare la adăugarea recenziei' });
+    }
+});
+
+
+
+
+// Endpoint pentru obținerea recenziilor unui produs
+app.get('/reviews/:productId', async (req, res) => {
+    const { productId } = req.params;
+    if (!productId) {
+        return res.status(400).json({ success: false, message: 'ID-ul produsului este necesar' });
+    }
+
+    try {
+        const product = await Product.findOne({ id: Number(productId) }, 'reviews');
+        if (!product) {
+            return res.status(404).json({ success: false, message: 'Produsul nu a fost găsit' });
+        }
+
+        res.json({ success: true, reviews: product.reviews });
+    } catch (error) {
+        console.error('Eroare la preluarea recenziilor:', error);
+        res.status(500).json({ success: false, message: 'Eroare la preluarea recenziilor' });
+    }
+});
+
 
 
 app.listen(port, (error) => {

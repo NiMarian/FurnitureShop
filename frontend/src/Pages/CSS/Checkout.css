@@ -190,6 +190,20 @@ input[type="radio"]:focus {
   cursor: pointer;
 }
 
+.address-select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.checkout-deliverymethod p{
+  font-size: 14px;
+  color: #381a09;
+}
+
 @media (max-width: 768px) {
   .checkout {
     flex-direction: column;

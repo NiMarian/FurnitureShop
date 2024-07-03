@@ -12,7 +12,6 @@
   display: grid;
   grid-template-columns: 0.5fr 2fr 1fr 1fr 1fr 1fr;
   align-items: center;
-  align-items: center;
   gap: 75px;
   padding: 20px 0px;
   color: #454545;
@@ -36,10 +35,27 @@
 }
 
 .cartitems-quantity {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 64px;
   height: 50px;
   border: 2px solid #ebebeb;
   background: #fff;
+}
+
+.cartitems-quantity button {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: transparent;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.cartitems-quantity span {
+  font-size: 18px;
+  font-weight: bold;
 }
 
 .cartitems-down {
@@ -129,6 +145,9 @@
     width: 40px;
     height: 30px;
   }
+  .cartitems-quantity span {
+    font-size: 14px;
+  }
   .cartitems-down {
     margin: 80px 0px;
     flex-direction: column;
@@ -152,5 +171,13 @@
   }
   .cartitems-format {
     display: grid;
+  }
+  .cartitems-quantity {
+    width: 30px;
+    height: 25px;
+    font-size: 12px;
+  }
+  .cartitems-quantity span {
+    font-size: 10px;
   }
 }
