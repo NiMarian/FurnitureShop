@@ -40,7 +40,6 @@ const UserProfile = () => {
     fetchUserData();
   }, []);
 
-
   if (!userData) {
     return <div>Loading...</div>;
   }
@@ -71,13 +70,13 @@ const UserProfile = () => {
                 <div key={index} className="order-item">
                   <h3>Comanda #{order._id}</h3>
                   <p>Data: {new Date(order.date).toLocaleDateString()}</p>
-                  <p>Total: {order.total} RON</p>
+                  <p>Total: {order.total.toFixed(2)} RON</p>
                   <p>Status: {order.status}</p>
                   <h4>Produse:</h4>
                   <ul>
                     {order.cartItems.map((item, idx) => (
                       <li key={idx}>
-                        {item.productName} - Cantitate: {item.quantity} - Preț: {item.price} RON (cu TVA)
+                        {item.productName} - Cantitate: {item.quantity} - Preț: {item.price.toFixed(2)} RON (cu TVA)
                       </li>
                     ))}
                   </ul>

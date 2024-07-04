@@ -9,7 +9,6 @@ const NewCollections = () => {
     fetch('http://localhost:4000/newcollections')
       .then((response) => response.json())
       .then((data) => {
-        console.log("New Collections Data:", data);
         setNew_collection(data);
       });
   }, []);
@@ -26,8 +25,8 @@ const NewCollections = () => {
               id={item.id} 
               name={item.name} 
               image={item.image} 
-              new_price_with_tva={item.new_price_with_tva} 
-              old_price={item.old_price} 
+              new_price_with_tva={item.new_price_with_tva.toFixed(2)} 
+            old_price={item.old_price ? item.old_price.toFixed(2) : null}  
             />
           );
         })}

@@ -164,7 +164,16 @@
   }
   .nav-menu-visible {
     display: flex;
+    padding: 0px;
   }
+
+  .nav-menu-visible li{
+    display: flex;
+    padding: 0px;
+    font-size: 17px;
+    font-weight: 600;
+  }
+
   .nav-dropdown.open {
     transform: rotate(90deg);
   }

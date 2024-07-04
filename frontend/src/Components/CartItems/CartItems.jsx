@@ -6,11 +6,11 @@ import { useNavigate } from 'react-router-dom';
 
 const CartItems = () => {
   const { getTotalCartAmount, all_product, cartItems, removeFromCart, updateCartItemQuantity } = useContext(ShopContext);
-  const [total, setTotal] = useState(getTotalCartAmount());
+  const [total, setTotal] = useState(getTotalCartAmount().toFixed(2));
   const navigate = useNavigate();
 
   useEffect(() => {
-    setTotal(getTotalCartAmount());
+    setTotal(getTotalCartAmount().toFixed(2));
   }, [cartItems, getTotalCartAmount]);
 
   const handleNextStep = () => {
@@ -25,6 +25,10 @@ const CartItems = () => {
     if (cartItems[itemId] > 1) {
       updateCartItemQuantity(itemId, cartItems[itemId] - 1);
     }
+  };
+
+  const handleRemove = (itemId) => {
+    updateCartItemQuantity(itemId, 0);
   };
 
   return (
@@ -46,14 +50,14 @@ const CartItems = () => {
               <div className="cartitems-format cartitems-format-main">
                 <img src={e.image} alt="" className='carticon-product-icon' />
                 <p>{e.name}</p>
-                <p>{price} RON</p>
+                <p>{price.toFixed(2)} RON</p>
                 <div className="cartitems-quantity">
                   <button onClick={() => handleDecrement(e.id)}>-</button>
                   <span>{cartItems[e.id]}</span>
                   <button onClick={() => handleIncrement(e.id)}>+</button>
                 </div>
-                <p>{price * cartItems[e.id]} RON</p>
-                <img className='cartitems-remove-icon' src={remove_icon} onClick={() => { removeFromCart(e.id) }} alt="" />
+                <p>{(price * cartItems[e.id]).toFixed(2)} RON</p>
+                <img className='cartitems-remove-icon' src={remove_icon} onClick={() => { handleRemove(e.id) }} alt="" />
               </div>
               <hr />
             </div>
@@ -68,7 +72,7 @@ const CartItems = () => {
           <div>
             <div className="cartitems-total-item">
               <p>Subtotal</p>
-              <p>{getTotalCartAmount()} RON</p>
+              <p>{getTotalCartAmount().toFixed(2)} RON</p>
             </div>
             <hr />
             <div className="cartitems-total-item">

@@ -44,7 +44,7 @@ const DescriptionBox = ({ productId, userId, userName }) => {
             text: reviewText
         };
     
-        console.log(newReview); // Verifică datele trimise
+        console.log(newReview);
     
         try {
             const response = await fetch('http://localhost:4000/addreview', {

@@ -12,13 +12,13 @@ const CategorieMagazin = (props) => {
 
   useEffect(() => {
     let filtered = all_product.filter(item => item.category === props.category);
-    
+
     if (sortOrder === 'asc') {
       filtered.sort((a, b) => a.new_price_with_tva - b.new_price_with_tva);
     } else if (sortOrder === 'desc') {
       filtered.sort((a, b) => b.new_price_with_tva - a.new_price_with_tva);
     }
-    
+
     setFilteredProducts(filtered);
     setProductsToShow(filtered.slice(0, visibleCount));
   }, [all_product, props.category, visibleCount, sortOrder]);
@@ -61,8 +61,8 @@ const CategorieMagazin = (props) => {
             id={item.id} 
             name={item.name} 
             image={item.image} 
-            new_price_with_tva={item.new_price_with_tva} 
-            old_price={item.old_price} 
+            new_price_with_tva={item.new_price_with_tva.toFixed(2)} 
+            old_price={item.old_price ? item.old_price.toFixed(2) : null} 
           />
         ))}
       </div>

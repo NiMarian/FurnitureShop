@@ -37,7 +37,7 @@
 .checkout-adresa {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 20px;
+  margin-bottom: 0px;
 }
 
 .checkout-name input[type="text"],
@@ -126,13 +126,14 @@
 
 .checkout-promobox button {
   flex-shrink: 0;
-  margin: 0;
+  margin: 0px;
   padding: 10px 20px;
   background-color: #d67034;
   border: none;
   color: white;
   border-radius: 4px;
   cursor: pointer;
+  margin-bottom: 15px;
 }
 
 .checkout-plasare button {
@@ -199,7 +200,7 @@ input[type="radio"]:focus {
   font-size: 16px;
 }
 
-.checkout-deliverymethod p{
+.checkout-deliverymethod p {
   font-size: 14px;
   color: #381a09;
 }

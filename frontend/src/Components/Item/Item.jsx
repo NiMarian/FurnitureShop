@@ -3,7 +3,6 @@ import './Item.css';
 import { Link } from 'react-router-dom';
 
 const Item = (props) => {
-  console.log("Item Props:", props); // Adăugăm acest log pentru a verifica prop-urile
 
   return (
     <div className='item'>

@@ -12,6 +12,11 @@ const { log, error } = require("console");
 const fs = require("fs");
 const nodemailer = require('nodemailer');
 const ObjectId = mongoose.Types.ObjectId;
+const paypal = require('@paypal/checkout-server-sdk');
+const { v4: uuidv4 } = require('uuid');
+const exchangeRateRONToEUR = 0.20;
+const axios = require('axios');
+
 
 app.use(express.json());
 app.use(cors());
@@ -349,7 +354,7 @@ app.post('/admin/login', async (req, res) => {
 app.get('/newcollections', async (req, res) => {
     try {
         let products = await Product.find({}).sort({ date: -1 }).limit(5);
-        console.log("New Collections:", products);  // Adaugă această linie
+        console.log("New Collections:", products);
         res.json(products);
     } catch (error) {
         console.error("Eroare la preluarea colecțiilor noi:", error);
@@ -364,7 +369,6 @@ app.get('/newcollections', async (req, res) => {
 app.get('/popularindecoratiuni', async (req, res) => {
     try {
         let products = await Product.find({ category: 'decoratiuni' }).sort({ soldCount: -1 }).limit(5);
-        console.log("Popular Products:", products);  // Adaugă această linie
         res.json(products);
     } catch (error) {
         console.error("Eroare la preluarea produselor populare:", error);
@@ -689,12 +693,27 @@ const orderSchema = new mongoose.Schema({
   });
   const Order = mongoose.model('Order', orderSchema);
   
-
+  app.post('/convert-to-usd', async (req, res) => {
+    const { amount } = req.body;
+  
+    try {
+      const response = await fetch('https://api.exchangerate-api.com/v4/latest/RON');
+      const data = await response.json();
+  
+      const rate = data.rates.USD;
+      const amountInUSD = amount * rate;
+  
+      res.json({ success: true, amountInUSD });
+    } catch (error) {
+      console.error('Eroare la conversia în USD:', error);
+      res.json({ success: false, message: 'Eroare la conversia în USD' });
+    }
+  });
 
 //Endpoit pentru plasarea comenzii
 app.post('/placeorder', async (req, res) => {
     try {
-        const { contactDetails, shippingDetails, deliveryMethod, paymentMethod, cardDetails, subtotal, shippingCost, total, promoCode, promoDiscount, vat, cartItems } = req.body;
+        const { contactDetails, shippingDetails, deliveryMethod, paymentMethod, cardDetails, subtotal, shippingCost, total, promoCode, promoDiscount, cartItems } = req.body;
 
         const insufficientStockItems = [];
         for (const item of cartItems) {
@@ -708,10 +727,6 @@ app.post('/placeorder', async (req, res) => {
             return res.status(400).json({ success: false, message: 'Stocul este insuficient pentru următoarele produse: ' + insufficientStockItems.join(', ') });
         }
 
-        const vatAmount = (subtotal * vat) / 100;
-
-        const totalWithVat = total + vatAmount;
-
         const order = new Order({
             contactDetails,
             shippingDetails,
@@ -720,7 +735,7 @@ app.post('/placeorder', async (req, res) => {
             cardDetails,
             subtotal,
             shippingCost,
-            total: totalWithVat,
+            total,
             promoCode,
             promoDiscount,
             cartItems 
@@ -728,6 +743,7 @@ app.post('/placeorder', async (req, res) => {
 
         await order.save();
 
+        // Actualizarea stocului produselor
         for (const item of cartItems) {
             await Product.updateOne(
                 { id: item.productId },
@@ -735,6 +751,7 @@ app.post('/placeorder', async (req, res) => {
             );
         }
 
+        // Trimiterea email-ului de confirmare
         const formattedCartItems = cartItems.map(item => 
             `${item.productName} - Cantitate: ${item.quantity} - Preț: ${item.price} RON`
         ).join('\n');
@@ -762,15 +779,15 @@ app.post('/placeorder', async (req, res) => {
                       <tr>
                         <td style="border: 1px solid #ddd; padding: 8px;">${item.productName}</td>
                         <td style="border: 1px solid #ddd; padding: 8px; text-align: right;">${item.quantity}</td>
-                        <td style="border: 1px solid #ddd; padding: 8px; text-align: right;">${item.price} RON</td>
+                        <td style="border: 1px solid #ddd; padding: 8px; text-align: right;">${item.price.toFixed(2)} RON</td>
                       </tr>
                     `).join('')}
                   </tbody>
                 </table>
-                <p style="font-size: 16px; color: #555;">Subtotal: ${subtotal} RON</p>
-                <p style="font-size: 16px; color: #555;">Cost de livrare: ${shippingCost} RON</p>
-                <p style="font-size: 16px; color: #555;">Discount: ${promoDiscount} RON</p>
-                <p style="font-size: 16px; font-weight: bold; color: #333;">Total: ${total} RON</p>
+                <p style="font-size: 16px; color: #555;">Subtotal: ${subtotal.toFixed(2)} RON</p>
+                <p style="font-size: 16px; color: #555;">Cost de livrare: ${shippingCost.toFixed(2)} RON</p>
+                <p style="font-size: 16px; color: #555;">Discount: ${promoDiscount.toFixed(2)} RON</p>
+                <p style="font-size: 16px; font-weight: bold; color: #333;">Total: ${total.toFixed(2)} RON</p>
                 <p style="font-size: 16px; color: #555;">Mulțumim pentru cumpărăturile făcute!</p>
                 <p style="font-size: 16px; color: #555;">Cu stimă,</p>
                 <p style="font-size: 16px; color: #555;">Echipa Exotique</p>
@@ -785,7 +802,6 @@ app.post('/placeorder', async (req, res) => {
           };
 
         await transporter.sendMail(mailOptions);
-
 
         res.status(200).json({ success: true, order });
     } catch (error) {
@@ -1108,7 +1124,6 @@ app.post('/addreview', async (req, res) => {
             return res.status(400).json({ success: false, message: 'Datele recenziei sunt incomplete' });
         }
 
-        // Validare productId și userId
         if (!mongoose.Types.ObjectId.isValid(userId)) {
             return res.status(400).json({ success: false, message: 'ID-ul utilizatorului este invalid' });
         }
@@ -1135,8 +1150,6 @@ app.post('/addreview', async (req, res) => {
 });
 
 
-
-
 // Endpoint pentru obținerea recenziilor unui produs
 app.get('/reviews/:productId', async (req, res) => {
     const { productId } = req.params;
@@ -1157,6 +1170,80 @@ app.get('/reviews/:productId', async (req, res) => {
     }
 });
 
+
+const environment = new paypal.core.SandboxEnvironment('AZKZtZ-zoGzqkDoPOLGRQoocJGv6Uu-yI-fBOp5eOAy6PelONLq8apjQEnsTSMbwac2pqleSAE_ChS6Y', 'EFt2iP1jprkJgi_gwYp2xnq041HaGnXxUYge6NrGD8UkbSauzeBKvvPu247nOr2kCCvT052hmswDKFaT');
+const client = new paypal.core.PayPalHttpClient(environment);
+
+app.post('/create-paypal-transaction', async (req, res) => {
+    try {
+        const { subtotal, discount, shipping } = req.body;
+
+        const totalInRON = subtotal - discount + shipping;
+
+        const response = await axios.get('https://api.exchangerate-api.com/v4/latest/RON');
+        const exchangeRateRONToUSD = response.data.rates.USD;
+
+        const subtotalInUSD = (subtotal * exchangeRateRONToUSD).toFixed(2);
+        const discountInUSD = (discount * exchangeRateRONToUSD).toFixed(2);
+        const shippingInUSD = (shipping * exchangeRateRONToUSD).toFixed(2);
+        const totalInUSD = (totalInRON * exchangeRateRONToUSD).toFixed(2);
+
+        const itemTotalInUSD = subtotalInUSD;
+
+        // Configurarea comenzii PayPal în USD
+        const request = new paypal.orders.OrdersCreateRequest();
+        request.prefer("return=representation");
+        request.requestBody({
+            intent: "CAPTURE",
+            purchase_units: [
+                {
+                    amount: {
+                        currency_code: "USD",
+                        value: totalInUSD,
+                        breakdown: {
+                            item_total: {
+                                currency_code: "USD",
+                                value: itemTotalInUSD,
+                            },
+                            shipping: {
+                                currency_code: "USD",
+                                value: shippingInUSD,
+                            },
+                            discount: {
+                                currency_code: "USD",
+                                value: discountInUSD,
+                            },
+                        },
+                    },
+                },
+            ],
+        });
+
+        const order = await client.execute(request);
+        res.json({
+            id: order.result.id,
+        });
+    } catch (error) {
+        console.error("Eroare la crearea tranzacției PayPal:", error);
+        res.status(500).json({ success: false, message: 'Eroare la crearea tranzacției PayPal' });
+    }
+});
+
+
+app.post('/capture-paypal-transaction', async (req, res) => {
+    const { orderID } = req.body;
+
+    const request = new paypal.orders.OrdersCaptureRequest(orderID);
+    request.requestBody({});
+
+    try {
+        const capture = await client.execute(request);
+        res.json({ status: capture.result.status });
+    } catch (error) {
+        console.error('Eroare la capturarea tranzacției PayPal:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
 
 
 app.listen(port, (error) => {
