@@ -244,7 +244,7 @@ const AfisareComenzi = () => {
                     ))}
                   </ul>
                 </td>
-                <td data-label="Total">{order.total} RON</td>
+                <td data-label="Total">{order.total.toFixed(2)} RON</td>
                 <td data-label="Status">{order.status}</td>
                 <td data-label="Acțiuni">
                   <button onClick={() => handleDeleteOrder(order._id)} disabled={order.status === 'Livrat' || order.status === 'Expediat' || order.status === 'În așteptare'}>

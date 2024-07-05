@@ -212,17 +212,17 @@ app.post('/removeproduct', async (req, res) => {
 // Obținerea produselor endpoint
 app.get('/allproducts', async (req, res) => {
     try {
-        let products = await Product.find({});
-        console.log("All Products");
-        res.json(products);
+      let products = await Product.find({});
+      console.log("All Products");
+      res.json(products);
     } catch (error) {
-        console.error("Eroare la preluarea produselor:", error);
-        res.status(500).json({
-            success: false,
-            message: 'Eroare la preluarea produselor'
-        });
+      console.error("Eroare la preluarea produselor:", error);
+      res.status(500).json({
+        success: false,
+        message: 'Eroare la preluarea produselor'
+      });
     }
-});
+  });
 
 //Schema pentru crearea modelului User
 const Users = mongoose.model('Users', {
