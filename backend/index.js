@@ -796,7 +796,7 @@ app.post('/placeorder', async (req, res) => {
                 <p style="font-size: 16px; color: #555;">Echipa Exotique</p>
                 <hr style="border: 0; border-top: 1px solid #ddd; margin: 20px 0;">
                 <p style="font-size: 12px; color: #999; text-align: center;">
-                <p>...</p><p>Pentru a anula comanda, click <a href="https://localhost:${port}/cancel-order/${order._id}">aici</a>.</p>
+                <p>...</p><p>Pentru a anula comanda, click <a href="https://furnitureshop-backend.onrender.com/cancel-order/${order._id}">aici</a>.</p>
                   Exotique, București, România<br>
                   Vă urăm o zi buna in continuare!
                 </p>
