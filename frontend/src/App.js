@@ -23,15 +23,15 @@ function App() {
       <Navbar/>
       <Routes>
         <Route path='/' element={<Magazin/>}/>
-        <Route path='/decoratiuni' element={<CategorieMagazin banner = {banner_decoratii} category ="decoratiuni"/>}/>
-        <Route path='/luminat' element={<CategorieMagazin banner = {banner_lumina} category ="luminat" />}/>
-        <Route path='/mobila' element={<CategorieMagazin banner = {banner_mobila} category ="mobila" />}/>
-        <Route path='/produse/:productId' element={<Produse />} />
-        <Route path='/cos' element={<Cos/>}/>
-        <Route path='/login' element={<LoginSignup/>}/>
-        <Route path="/checkout" element={<Checkout />} />
-        <Route path="/profile" element={<UserProfile />} />
-        <Route path="/profile/addresses" element={<UserAddresses />} />
+        <Route path='https://furnitureshop-frontend.onrender.com/decoratiuni' element={<CategorieMagazin banner = {banner_decoratii} category ="decoratiuni"/>}/>
+        <Route path='https://furnitureshop-frontend.onrender.com/luminat' element={<CategorieMagazin banner = {banner_lumina} category ="luminat" />}/>
+        <Route path='https://furnitureshop-frontend.onrender.com/mobila' element={<CategorieMagazin banner = {banner_mobila} category ="mobila" />}/>
+        <Route path='https://furnitureshop-frontend.onrender.com/produse/:productId' element={<Produse />} />
+        <Route path='https://furnitureshop-frontend.onrender.com/cos' element={<Cos/>}/>
+        <Route path='https://furnitureshop-frontend.onrender.com/login' element={<LoginSignup/>}/>
+        <Route path="https://furnitureshop-frontend.onrender.com/checkout" element={<Checkout />} />
+        <Route path="https://furnitureshop-frontend.onrender.com/profile" element={<UserProfile />} />
+        <Route path="https://furnitureshop-frontend.onrender.com/profile/addresses" element={<UserAddresses />} />
       </Routes>
       <Footer/>
       </BrowserRouter>
