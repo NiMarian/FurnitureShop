@@ -6,7 +6,8 @@
   margin-bottom: 50px;
   background: linear-gradient(180deg, #8f4c0e, #f8eac322 60%);
   height: 300px;
-  margin-top: 50px;
+  margin-top: 30px;
+  clear: both;
 }
 
 .offers-left {
