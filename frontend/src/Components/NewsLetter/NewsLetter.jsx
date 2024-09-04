@@ -7,7 +7,7 @@ const NewsLetter = () => {
 
   const handleSubscribe = async () =>{
     try {
-      const response = await fetch("http://localhost:4000/subscribe",{
+      const response = await fetch("https://furnitureshop-backend.onrender.com/subscribe",{
         method:'POST',
         headers:{
           'Content-Type':'application/json'
