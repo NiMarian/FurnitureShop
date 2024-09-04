@@ -10,6 +10,7 @@ const CartItems = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log('Cart Items:', cartItems);
     setTotal(getTotalCartAmount().toFixed(2));
   }, [cartItems, getTotalCartAmount]);
 
