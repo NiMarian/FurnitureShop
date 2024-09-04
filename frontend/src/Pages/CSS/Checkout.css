@@ -151,7 +151,7 @@
   cursor: pointer;
 }
 
-.section button{
+.place-order-button{
   padding: 10px 20px;
   background-color: #d67034;
   border: none;
@@ -160,7 +160,7 @@
   cursor: pointer;
 }
 
-.section button:hover{
+.place-order-button:hover{
   background-color: #b85c28;
 }
 

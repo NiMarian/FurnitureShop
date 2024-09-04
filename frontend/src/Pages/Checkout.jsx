@@ -528,7 +528,7 @@ const Checkout = () => {
         {paymentMethod === 'PayPal' ? (
             <PayPalButtons createOrder={createOrder} onApprove={onApprove} />
           ) : (
-            <button onClick={handleSubmit}>Plasează comanda</button>
+            <button className='place-order-button' onClick={handleSubmit}>Plasează comanda</button>
 
           )}
         </div>
