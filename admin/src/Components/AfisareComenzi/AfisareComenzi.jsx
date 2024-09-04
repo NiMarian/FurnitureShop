@@ -17,7 +17,7 @@ const AfisareComenzi = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await fetch('http://localhost:4000/allorders');
+        const response = await fetch('https://furnitureshop-backend.onrender.com/allorders');
         const data = await response.json();
         if (data.success) {
           setOrders(data.orders);
@@ -39,7 +39,7 @@ const AfisareComenzi = () => {
 
   const updateOrderStatus = async (orderId, newStatus) => {
     try {
-      const response = await fetch(`http://localhost:4000/updatestatus`, {
+      const response = await fetch(`https://furnitureshop-backend.onrender.com/updatestatus`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -70,7 +70,7 @@ const AfisareComenzi = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:4000/deleteorder`, {
+      const response = await fetch(`https://furnitureshop-backend.onrender.com/deleteorder`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',

@@ -11,7 +11,7 @@ const Statistics = () => {
     const tva = 19;
 
     useEffect(() => {
-        fetch('http://localhost:4000/bestsellingproduct')
+        fetch('https://furnitureshop-backend.onrender.com/bestsellingproduct')
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
@@ -35,7 +35,7 @@ const Statistics = () => {
 
     useEffect(() => {
         if (startDate && endDate) {
-            fetch(`http://localhost:4000/totalsales?startDate=${startDate}&endDate=${endDate}`)
+            fetch(`https://furnitureshop-backend.onrender.com/totalsales?startDate=${startDate}&endDate=${endDate}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {

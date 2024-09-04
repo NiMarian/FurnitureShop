@@ -30,7 +30,7 @@ const ShopContextProvider = (props) => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch('http://localhost:4000/allproducts');
+        const response = await fetch('https://furnitureshop-backend.onrender.com/allproducts');
         const data = await response.json();
         setAll_Product(data);
       } catch (error) {
@@ -47,7 +47,7 @@ const ShopContextProvider = (props) => {
       const token = localStorage.getItem('auth-token');
       if (token) {
         try {
-          const response = await fetch('http://localhost:4000/user', {
+          const response = await fetch('https://furnitureshop-backend.onrender.com/user', {
             headers: {
               'auth-token': token,
               'Content-Type': 'application/json'
@@ -86,7 +86,7 @@ const ShopContextProvider = (props) => {
     });
 
     if (localStorage.getItem('auth-token')) {
-      fetch('http://localhost:4000/addtocart', {
+      fetch('https://furnitureshop-backend.onrender.com/addtocart', {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -107,7 +107,7 @@ const ShopContextProvider = (props) => {
     });
 
     if (localStorage.getItem('auth-token')) {
-      fetch('http://localhost:4000/removefromcart', {
+      fetch('https://furnitureshop-backend.onrender.com/removefromcart', {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -128,7 +128,7 @@ const ShopContextProvider = (props) => {
     });
 
     if (localStorage.getItem('auth-token')) {
-      fetch('http://localhost:4000/updatecartitemquantity', {
+      fetch('https://furnitureshop-backend.onrender.com/updatecartitemquantity', {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -147,7 +147,7 @@ const ShopContextProvider = (props) => {
     saveCartToLocalStorage(emptyCart);
 
     if (localStorage.getItem('auth-token')) {
-      fetch('http://localhost:4000/clearcart', {
+      fetch('https://furnitureshop-backend.onrender.com/clearcart', {
         method: 'POST',
         headers: {
           Accept: 'application/json',

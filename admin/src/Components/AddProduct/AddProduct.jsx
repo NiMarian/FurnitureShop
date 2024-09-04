@@ -17,7 +17,7 @@ const AddProduct = () => {
     useEffect(() => {
         const fetchMaxId = async () => {
             try {
-                const response = await fetch('http://localhost:4000/maxProductId');
+                const response = await fetch('https://furnitureshop-backend.onrender.com/maxProductId');
                 const data = await response.json();
                 if (data.success) {
                     setProductDetails(prevDetails => ({
@@ -63,7 +63,7 @@ const AddProduct = () => {
         formData.append('product', image);
 
         try {
-            let uploadResponse = await fetch('http://localhost:4000/upload', {
+            let uploadResponse = await fetch('https://furnitureshop-backend.onrender.com/upload', {
                 method: 'POST',
                 body: formData,
             });
@@ -73,7 +73,7 @@ const AddProduct = () => {
                 product.image = responseData.image_url;
                 console.log(product);
                 try {
-                    let addProductResponse = await fetch('http://localhost:4000/addproduct', {
+                    let addProductResponse = await fetch('https://furnitureshop-backend.onrender.com/addproduct', {
                         method: 'POST',
                         headers: {
                             Accept: 'application/json',

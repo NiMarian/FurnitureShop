@@ -14,7 +14,7 @@ const DescriptionBox = ({ productId, userId, userName }) => {
     
         const fetchReviews = async () => {
             try {
-                const response = await fetch(`http://localhost:4000/reviews/${productId}`);
+                const response = await fetch(`https://furnitureshop-backend.onrender.com/reviews/${productId}`);
                 const data = await response.json();
                 if (data.success) {
                     setReviews(data.reviews);
@@ -47,7 +47,7 @@ const DescriptionBox = ({ productId, userId, userName }) => {
         console.log(newReview);
     
         try {
-            const response = await fetch('http://localhost:4000/addreview', {
+            const response = await fetch('https://furnitureshop-backend.onrender.com/addreview', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

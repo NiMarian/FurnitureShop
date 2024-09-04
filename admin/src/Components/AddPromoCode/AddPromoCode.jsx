@@ -20,7 +20,7 @@ const AddPromoCode = () => {
 
     const addPromoCode = async () => {
         try {
-            let response = await fetch('http://localhost:4000/addpromocode', {
+            let response = await fetch('https://furnitureshop-backend.onrender.com/addpromocode', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -42,7 +42,7 @@ const AddPromoCode = () => {
 
     const deletePromoCode = async () => {
         try {
-            let response = await fetch('http://localhost:4000/removepromocode', {
+            let response = await fetch('https://furnitureshop-backend.onrender.com/removepromocode', {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -64,7 +64,7 @@ const AddPromoCode = () => {
 
     const fetchPromoCodes = async () => {
         try {
-            let response = await fetch('http://localhost:4000/getpromocodes');
+            let response = await fetch('https://furnitureshop-backend.onrender.com/getpromocodes');
             let data = await response.json();
             if (data.success) {
                 setPromoCodes(data.promoCodes);

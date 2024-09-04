@@ -39,7 +39,7 @@ const Checkout = () => {
     const fetchUserAddresses = async () => {
       try {
         const token = localStorage.getItem('auth-token');
-        const response = await fetch('http://localhost:4000/addresses', {
+        const response = await fetch('https://furnitureshop-backend.onrender.com/addresses', {
           headers: {
             'auth-token': token,
             'Content-Type': 'application/json'
@@ -116,7 +116,7 @@ const Checkout = () => {
 
   const applyPromoCode = async () => {
     try {
-      const response = await fetch('http://localhost:4000/checkpromocode', {
+      const response = await fetch('https://furnitureshop-backend.onrender.com/checkpromocode', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ code: promoCode }),
@@ -187,7 +187,7 @@ const Checkout = () => {
     };
 
     try {
-      const response = await fetch('http://localhost:4000/placeorder', {
+      const response = await fetch('https://furnitureshop-backend.onrender.com/placeorder', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(checkoutDetails),
@@ -251,7 +251,7 @@ const Checkout = () => {
     };
 
     try {
-      const response = await fetch('http://localhost:4000/placeorder', {
+      const response = await fetch('https://furnitureshop-backend.onrender.com/placeorder', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(checkoutDetails),
@@ -300,7 +300,7 @@ const Checkout = () => {
 
   const convertRONToUSD = async (amountInRON) => {
     try {
-      const response = await fetch('http://localhost:4000/convert-to-usd', {
+      const response = await fetch('https://furnitureshop-backend.onrender.com/convert-to-usd', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ amount: amountInRON }),

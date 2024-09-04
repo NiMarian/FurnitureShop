@@ -28,7 +28,7 @@ const LoginSignup = () => {
   const login = async () => {
     console.log("Login reusit", formData);
     try {
-      const endpoint = isAdminLogin ? 'http://localhost:4000/admin/login' : 'http://localhost:4000/login';
+      const endpoint = isAdminLogin ? 'https://furnitureshop-backend.onrender.com/admin/login' : 'https://furnitureshop-backend.onrender.com/login';
       const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
@@ -63,7 +63,7 @@ const LoginSignup = () => {
     }
     console.log("Inregistrare reusita", formData);
     let responseData;
-    await fetch('http://localhost:4000/signup', {
+    await fetch('https://furnitureshop-backend.onrender.com/signup', {
       method: 'POST',
       headers: {
         Accept: 'application/form-data',

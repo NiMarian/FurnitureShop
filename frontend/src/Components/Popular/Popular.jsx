@@ -6,7 +6,7 @@ const Popular = () => {
   const [popularProducts, setPopularProducts] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:4000/popularindecoratiuni')
+    fetch('https://furnitureshop-backend.onrender.com/popularindecoratiuni')
       .then((response) => response.json())
       .then((data) => {
         setPopularProducts(data);

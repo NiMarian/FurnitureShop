@@ -20,7 +20,7 @@ const UserAddresses = () => {
     const fetchAddresses = async () => {
       try {
         const token = localStorage.getItem('auth-token');
-        const response = await fetch('http://localhost:4000/addresses', {
+        const response = await fetch('https://furnitureshop-backend.onrender.com/addresses', {
           headers: {
             'auth-token': token,
             'Content-Type': 'application/json'
@@ -55,7 +55,7 @@ const UserAddresses = () => {
     e.preventDefault();
     try {
       const token = localStorage.getItem('auth-token');
-      const response = await fetch('http://localhost:4000/addresses', {
+      const response = await fetch('https://furnitureshop-backend.onrender.com/addresses', {
         method: 'POST',
         headers: {
           'auth-token': token,
@@ -89,7 +89,7 @@ const UserAddresses = () => {
   const handleDeleteAddress = async (index) => {
     try {
       const token = localStorage.getItem('auth-token');
-      const response = await fetch(`http://localhost:4000/addresses/${index}`, {
+      const response = await fetch(`https://furnitureshop-backend.onrender.com/addresses/${index}`, {
         method: 'DELETE',
         headers: {
           'auth-token': token,

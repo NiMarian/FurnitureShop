@@ -12,7 +12,7 @@ const UserProfile = () => {
     const fetchUserData = async () => {
       try {
         const token = localStorage.getItem('auth-token');
-        const response = await fetch('http://localhost:4000/user', {
+        const response = await fetch('https://furnitureshop-backend.onrender.com/user', {
           headers: {
             'auth-token': token,
             'Content-Type': 'application/json'
