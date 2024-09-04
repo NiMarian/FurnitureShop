@@ -7,7 +7,6 @@ import NewsLetter from '../Components/NewsLetter/NewsLetter'
 
 const Magazin = () => {
   useEffect(() => {
-    // Afișează o alertă când componenta Magazin este montată
     alert('ACEASTĂ PAGINĂ NU REPREZINTĂ UN MAGAZIN REAL!!!\nAcest magazin fictiv este creat de Nicuță Marian');
   }, []);
   return (
