@@ -467,7 +467,7 @@ app.post('/subscribe', async (req, res) => {
         await newSubscription.save();
         console.log('Abonare reușită pentru email:', email);
 
-        const unsubscribeLink = `https://localhost:${port}/unsubscribe/${email}`;
+        const unsubscribeLink = `https://furnitureshop-backend.onrender.com//unsubscribe/${email}`;
 
         const mailOptions = {
             from: 'contactexotique2@gmail.com',
@@ -514,7 +514,7 @@ app.post('/unsubscribe', async (req, res) => {
             return res.status(400).json({ success: false, message: 'Email-ul nu este abonat.' });
         }
 
-        const unsubscribeLink = `https://localhost:${port}/unsubscribe/${email}`;
+        const unsubscribeLink = `https://furnitureshop-backend.onrender.com//unsubscribe/${email}`;
 
         const mailOptions = {
             from: 'contactexotique2@gmail.com',

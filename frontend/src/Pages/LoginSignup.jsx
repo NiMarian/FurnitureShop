@@ -75,7 +75,7 @@ const LoginSignup = () => {
     if (responseData.success) {
       alert("Înregistrarea a avut loc cu succes! Spor la cumpărături!");
       localStorage.setItem('auth-token', responseData.token);
-      window.location.href = 'http://localhost:3000';
+      window.location.href = 'https://furnitureshop-backend.onrender.com/';
     } else {
       alert(responseData.errors);
     }
