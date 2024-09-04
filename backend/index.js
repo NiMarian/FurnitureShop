@@ -158,13 +158,6 @@ app.get('/maxProductId', async (req, res) => {
     }
 });
 
-const cartItemsArray = Object.keys(cartItems).map(key => ({
-    productId: Number(key),
-    quantity: cartItems[key],
-    // Dacă ai nevoie de alte detalii, cum ar fi productName și price, trebuie să le adaugi manual sau să le cauți în baza de date.
-}));
-
-
 // Adaugare produs endpoint
 app.post('/addproduct', async (req, res) => {
     try {
@@ -720,20 +713,13 @@ const orderSchema = new mongoose.Schema({
     }
   });
 
-  app.post('/placeorder', async (req, res) => {
+//Endpoit pentru plasarea comenzii
+app.post('/placeorder', async (req, res) => {
     try {
         const { contactDetails, shippingDetails, deliveryMethod, paymentMethod, cardDetails, subtotal, shippingCost, total, promoCode, promoDiscount, cartItems } = req.body;
 
-        // Transforma cartItems din obiect în array
-        const cartItemsArray = Object.keys(cartItems).map(key => ({
-            productId: Number(key),
-            quantity: cartItems[key],
-            productName: "", // Completează aceste detalii fie din frontend, fie printr-o căutare în baza de date.
-            price: 0 // La fel, completează sau găsește aceste detalii.
-        }));
-
         const insufficientStockItems = [];
-        for (const item of cartItemsArray) {
+        for (const item of cartItems) {
             const product = await Product.findOne({ id: item.productId });
             if (!product || product.stock < item.quantity) {
                 insufficientStockItems.push(product ? product.name : item.productId);
@@ -755,13 +741,13 @@ const orderSchema = new mongoose.Schema({
             total,
             promoCode,
             promoDiscount,
-            cartItems: cartItemsArray // Folosind noul array de cartItems
+            cartItems 
         });
 
         await order.save();
 
         // Actualizarea stocului produselor
-        for (const item of cartItemsArray) {
+        for (const item of cartItems) {
             await Product.updateOne(
                 { id: item.productId },
                 { $inc: { stock: -item.quantity, soldCount: item.quantity } }
@@ -769,7 +755,7 @@ const orderSchema = new mongoose.Schema({
         }
 
         // Trimiterea email-ului de confirmare
-        const formattedCartItems = cartItemsArray.map(item => 
+        const formattedCartItems = cartItems.map(item => 
             `${item.productName} - Cantitate: ${item.quantity} - Preț: ${item.price} RON`
         ).join('\n');
 
