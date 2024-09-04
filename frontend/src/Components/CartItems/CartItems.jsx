@@ -11,6 +11,8 @@ const CartItems = () => {
 
   useEffect(() => {
     console.log('Cart Items:', cartItems);
+    console.log("CartItems Type:", typeof cartItems);
+    console.log("CartItems Content:", cartItems);
     setTotal(getTotalCartAmount().toFixed(2));
   }, [cartItems, getTotalCartAmount]);
 
