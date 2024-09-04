@@ -151,6 +151,19 @@
   cursor: pointer;
 }
 
+.section button{
+  padding: 10px 20px;
+  background-color: #d67034;
+  border: none;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.section button:hover{
+  background-color: #b85c28;
+}
+
 button[type="submit"],
 .checkout-promobox button {
   padding: 10px 20px;
