@@ -720,11 +720,11 @@ const orderSchema = new mongoose.Schema({
     }
   });
 
-//Endpoit pentru plasarea comenzii
-app.post('/placeorder', async (req, res) => {
+  app.post('/placeorder', async (req, res) => {
     try {
         const { contactDetails, shippingDetails, deliveryMethod, paymentMethod, cardDetails, subtotal, shippingCost, total, promoCode, promoDiscount, cartItems } = req.body;
 
+        // Transforma cartItems din obiect în array
         const cartItemsArray = Object.keys(cartItems).map(key => ({
             productId: Number(key),
             quantity: cartItems[key],
@@ -733,7 +733,7 @@ app.post('/placeorder', async (req, res) => {
         }));
 
         const insufficientStockItems = [];
-        for (const item of cartItems) {
+        for (const item of cartItemsArray) {
             const product = await Product.findOne({ id: item.productId });
             if (!product || product.stock < item.quantity) {
                 insufficientStockItems.push(product ? product.name : item.productId);
@@ -755,13 +755,13 @@ app.post('/placeorder', async (req, res) => {
             total,
             promoCode,
             promoDiscount,
-            cartItems: cartItemsArray
+            cartItems: cartItemsArray // Folosind noul array de cartItems
         });
 
         await order.save();
 
         // Actualizarea stocului produselor
-        for (const item of cartItems) {
+        for (const item of cartItemsArray) {
             await Product.updateOne(
                 { id: item.productId },
                 { $inc: { stock: -item.quantity, soldCount: item.quantity } }
@@ -769,7 +769,7 @@ app.post('/placeorder', async (req, res) => {
         }
 
         // Trimiterea email-ului de confirmare
-        const formattedCartItems = cartItems.map(item => 
+        const formattedCartItems = cartItemsArray.map(item => 
             `${item.productName} - Cantitate: ${item.quantity} - Preț: ${item.price} RON`
         ).join('\n');
 
