@@ -45,29 +45,32 @@ const CartItems = () => {
         <p>Șterge</p>
       </div>
       <hr />
-      {all_product && all_product.length > 0 ? all_product.map((e) => {
-        if (cartItems[e.id] > 0) {
-          const price = e.new_price_with_tva ? e.new_price_with_tva : 0;
-          return (
-            <div key={e.id}>
-              <div className="cartitems-format cartitems-format-main">
-                <img src={e.image} alt="" className='carticon-product-icon' />
-                <p>{e.name}</p>
-                <p>{price.toFixed(2)} RON</p>
-                <div className="cartitems-quantity">
-                  <button onClick={() => handleDecrement(e.id)}>-</button>
-                  <span>{cartItems[e.id]}</span>
-                  <button onClick={() => handleIncrement(e.id)}>+</button>
-                </div>
-                <p>{(price * cartItems[e.id]).toFixed(2)} RON</p>
-                <img className='cartitems-remove-icon' src={remove_icon} onClick={() => { handleRemove(e.id) }} alt="" />
-              </div>
-              <hr />
+      {all_product && all_product.length > 0 ? Object.keys(cartItems).map((itemId) => {
+  if (cartItems[itemId] > 0) {
+    const product = all_product.find(e => e.id === Number(itemId));
+    if (product) {
+      const price = product.new_price_with_tva ? product.new_price_with_tva : 0;
+      return (
+        <div key={product.id}>
+          <div className="cartitems-format cartitems-format-main">
+            <img src={product.image} alt="" className='carticon-product-icon' />
+            <p>{product.name}</p>
+            <p>{price.toFixed(2)} RON</p>
+            <div className="cartitems-quantity">
+              <button onClick={() => handleDecrement(product.id)}>-</button>
+              <span>{cartItems[product.id]}</span>
+              <button onClick={() => handleIncrement(product.id)}>+</button>
             </div>
-          );
-        }
-        return null;
-      }) : <p>Nu există produse în coș.</p>}
+            <p>{(price * cartItems[product.id]).toFixed(2)} RON</p>
+            <img className='cartitems-remove-icon' src={remove_icon} onClick={() => { handleRemove(product.id) }} alt="" />
+          </div>
+          <hr />
+        </div>
+      );
+    }
+  }
+  return null;
+}) : <p>Nu există produse în coș.</p>}
 
       <div className="cartitems-down">
         <div className="cartitems-total">
