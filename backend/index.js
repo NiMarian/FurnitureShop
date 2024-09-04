@@ -158,6 +158,13 @@ app.get('/maxProductId', async (req, res) => {
     }
 });
 
+const cartItemsArray = Object.keys(cartItems).map(key => ({
+    productId: Number(key),
+    quantity: cartItems[key],
+    // Dacă ai nevoie de alte detalii, cum ar fi productName și price, trebuie să le adaugi manual sau să le cauți în baza de date.
+}));
+
+
 // Adaugare produs endpoint
 app.post('/addproduct', async (req, res) => {
     try {
@@ -718,6 +725,13 @@ app.post('/placeorder', async (req, res) => {
     try {
         const { contactDetails, shippingDetails, deliveryMethod, paymentMethod, cardDetails, subtotal, shippingCost, total, promoCode, promoDiscount, cartItems } = req.body;
 
+        const cartItemsArray = Object.keys(cartItems).map(key => ({
+            productId: Number(key),
+            quantity: cartItems[key],
+            productName: "", // Completează aceste detalii fie din frontend, fie printr-o căutare în baza de date.
+            price: 0 // La fel, completează sau găsește aceste detalii.
+        }));
+
         const insufficientStockItems = [];
         for (const item of cartItems) {
             const product = await Product.findOne({ id: item.productId });
@@ -741,7 +755,7 @@ app.post('/placeorder', async (req, res) => {
             total,
             promoCode,
             promoDiscount,
-            cartItems 
+            cartItems: cartItemsArray
         });
 
         await order.save();
