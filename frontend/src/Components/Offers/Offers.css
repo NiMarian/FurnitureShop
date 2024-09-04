@@ -6,7 +6,7 @@
   margin-bottom: 50px;
   background: linear-gradient(180deg, #8f4c0e, #f8eac322 60%);
   height: 300px;
-  margin-top: 20px;
+  margin-top: 50px;
 }
 
 .offers-left {
@@ -48,7 +48,7 @@
   justify-content: flex-end;
   padding-top: 50px;
 }
-.offers-right img{
+.offers-right img {
   height: 350px;
 }
 
@@ -123,6 +123,7 @@
 
 @media (max-width: 500px) {
   .offers {
+    margin-top: 40px;
     height: 25vh;
     margin-bottom: 50px;
   }
