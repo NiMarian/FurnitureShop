@@ -162,11 +162,13 @@ const ShopContextProvider = (props) => {
 
   const getTotalCartAmount = () => {
     let totalAmount = 0;
-    for (const item in cartItems) {
-      if (cartItems[item] > 0) {
-        let itemInfo = all_product.find((product) => product.id === Number(item));
-        if (itemInfo && itemInfo.new_price_with_tva !== undefined) {
-          totalAmount += itemInfo.new_price_with_tva * cartItems[item];
+    if (cartItems && typeof cartItems === 'object') {
+      for (const item in cartItems) {
+        if (cartItems[item] > 0) {
+          let itemInfo = all_product.find((product) => product.id === Number(item));
+          if (itemInfo && itemInfo.new_price_with_tva !== undefined) {
+            totalAmount += itemInfo.new_price_with_tva * cartItems[item];
+          }
         }
       }
     }
