@@ -21,7 +21,7 @@ const axios = require('axios');
 app.use(express.json());
 app.use(cors({
     origin: 'https://furnitureshop-frontend.onrender.com',
-    credentials: true
+    credentials: true,
 }));
 
 // Conexiune la baza de date MongoDB
@@ -57,7 +57,7 @@ app.post("/upload", upload.single('product'), (req, res) => {
     if (req.file) {
         res.json({
             success: 1,
-            image_url: `http://localhost:${port}/images/${req.file.filename}`
+            image_url: `https://localhost:${port}/images/${req.file.filename}`
         });
     } else {
         res.status(400).json({
@@ -467,7 +467,7 @@ app.post('/subscribe', async (req, res) => {
         await newSubscription.save();
         console.log('Abonare reușită pentru email:', email);
 
-        const unsubscribeLink = `http://localhost:${port}/unsubscribe/${email}`;
+        const unsubscribeLink = `https://localhost:${port}/unsubscribe/${email}`;
 
         const mailOptions = {
             from: 'contactexotique2@gmail.com',
@@ -514,7 +514,7 @@ app.post('/unsubscribe', async (req, res) => {
             return res.status(400).json({ success: false, message: 'Email-ul nu este abonat.' });
         }
 
-        const unsubscribeLink = `http://localhost:${port}/unsubscribe/${email}`;
+        const unsubscribeLink = `https://localhost:${port}/unsubscribe/${email}`;
 
         const mailOptions = {
             from: 'contactexotique2@gmail.com',
@@ -796,7 +796,7 @@ app.post('/placeorder', async (req, res) => {
                 <p style="font-size: 16px; color: #555;">Echipa Exotique</p>
                 <hr style="border: 0; border-top: 1px solid #ddd; margin: 20px 0;">
                 <p style="font-size: 12px; color: #999; text-align: center;">
-                <p>...</p><p>Pentru a anula comanda, click <a href="http://localhost:${port}/cancel-order/${order._id}">aici</a>.</p>
+                <p>...</p><p>Pentru a anula comanda, click <a href="https://localhost:${port}/cancel-order/${order._id}">aici</a>.</p>
                   Exotique, București, România<br>
                   Vă urăm o zi buna in continuare!
                 </p>
