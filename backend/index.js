@@ -19,7 +19,10 @@ const axios = require('axios');
 
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    origin: 'https://furnitureshop-frontend.onrender.com',
+    credentials: true
+}));
 
 // Conexiune la baza de date MongoDB
 
